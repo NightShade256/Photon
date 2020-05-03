@@ -1,0 +1,8 @@
+discord.py[voice]
+asyncpg
+wavelink
+Pillow
+psutil
+async-timeout
+humanize
+uvloop; sys_platform == "linux"
