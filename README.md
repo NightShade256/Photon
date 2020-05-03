@@ -67,6 +67,8 @@ Photon can be self hosted on any platform of your choice.
 
 1. Initial Release
 
+Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon.
+
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
