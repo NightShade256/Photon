@@ -20,6 +20,8 @@ All that is required on our part is to stay home and have a bit of faith in our 
         self.tests_done = None
         self.last_fetched = None
         self.data_ready = asyncio.Event()
+
+        # pylint: disable=no-member
         self._fetch_data.start()
 
     # Done so as to not overwhelm the API.
@@ -34,8 +36,11 @@ All that is required on our part is to stay home and have a bit of faith in our 
         self.tests_done = data['tested'][-1]['totalsamplestested']
         self.last_fetched = datetime.datetime.utcnow()
         self.data_ready.set()
-    
+
     def cog_unload(self):
+        """Cancel the task of fetching data before cog unload."""
+
+        # pylint: disable=no-member
         self._fetch_data.cancel()
 
     @commands.command(name="covindia")

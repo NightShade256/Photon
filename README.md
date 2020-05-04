@@ -63,11 +63,18 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.0a
+### v1.1a
 
-1. Initial Release
+1. Fix a bug in the `music` cog.
+2. Add error handlers to the `photon`, `notes` cogs.
+3. Fix a incorrect type hint in the `music` cog.
+4. Fix a bug where the event loop would get closed before closure of the database pool
+   and the aiohttp web session.
+5. Disable a bunch of false positive pylint errors.
+6. **Feature-wise** no change has been made to the bot.
 
-Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon.
+Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
+hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.
 
 ## Contributing
 

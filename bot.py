@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands, tasks
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.0a"
+__version__ = "1.1a"
 
 
 extensions = [
@@ -51,8 +51,8 @@ class Photon(commands.Bot):
             try:
                 self.load_extension(ext)
                 self.photon_log.info(f"{ext} extension successfully loaded.")
-            except Exception:
-                self.photon_log.error(f"{ext} extension failed to load.")
+            except Exception as e:
+                self.photon_log.error(f"{ext} extension failed to load. EXCEPTION: {e}")
 
     async def on_ready(self):
         self.photon_log.info(
@@ -69,9 +69,9 @@ class Photon(commands.Bot):
     async def close(self):
         self.photon_log.info("Shutdown attempt started.")
         try:
-            await super().close()
             await self.web.close()
             await self.database.close()
+            await super().close()
             self.photon_log.info(
                 "Shutdown attempt successful. Photon has been closed.")
         except Exception:

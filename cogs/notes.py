@@ -15,11 +15,23 @@ class Notes(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_command_error(self, ctx, error):
+        """Mini error handler for this cog."""
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send(f"Please provide the **{error.param.name}** parameter.")
+        elif isinstance(error, commands.BadArgument):
+            if ctx.command.name == "list":
+                return await ctx.send("Please provide a valid integer only.")
+            else:
+                return await ctx.send("Please provide a valid Note ID.")
+        else:
+            pass
+
     @commands.command(name="add")
-    async def _nadd(self, ctx, *, title: str = None):
+    async def _nadd(self, ctx, *, title: str):
         """Adds a note under the user's ID to the database."""
-        if title is None:
-            return await ctx.send("Please specify a title during the invocation of the command.")
+
         if len(title) > 40:
             return await ctx.send("The length of the title is too long. Max Limit: 40 chars.")
 
@@ -54,6 +66,7 @@ class Notes(commands.Cog):
     @commands.command(name="list")
     async def _nlist(self, ctx, page: int = 1):
         """Lists the notes of the user invoking the command. Specify a page number to open that page."""
+
         query = "SELECT note_id, title FROM notes WHERE user_id = $1"
         async with self.bot.database.acquire() as con:
             notes = await con.fetch(query, ctx.author.id)
@@ -78,11 +91,10 @@ class Notes(commands.Cog):
         await ctx.send(embed=pages[page - 1])
 
     @commands.command(name="delete")
-    async def _ndelete(self, ctx, note_id: int = None):
+    async def _ndelete(self, ctx, note_id: int):
         """Deletes the note belonging to the user with the specified note ID."""
+
         query = "DELETE FROM notes WHERE user_id = $1 AND note_id = $2 RETURNING title;"
-        if note_id is None:
-            return await ctx.send("Please specify the note ID of the note you want to delete.")
         async with self.bot.database.acquire() as con:
             async with con.transaction():
                 row = await con.fetchrow(query, ctx.author.id, note_id)
@@ -93,8 +105,9 @@ class Notes(commands.Cog):
         await ctx.send(f"Note with **TITLE: {row['title']}** and **ID: {note_id}** was successfully removed.")
 
     @commands.command(name="view")
-    async def _nview(self, ctx, note_id: int = None):
+    async def _nview(self, ctx, note_id: int):
         """View the note belonging to the user with the specified note ID."""
+
         query = """SELECT content, title FROM notes WHERE user_id = $1 AND note_id = $2"""
         async with self.bot.database.acquire() as con:
             row = await con.fetchrow(query, ctx.author.id, note_id)
@@ -106,8 +119,9 @@ class Notes(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="file")
-    async def _nfile(self, ctx, note_id: int = None):
+    async def _nfile(self, ctx, note_id: int):
         """Converts the note into a .txt file which can then be downloaded."""
+
         query = """SELECT content, title FROM notes WHERE user_id = $1 AND note_id = $2"""
         async with self.bot.database.acquire() as con:
             row = await con.fetchrow(query, ctx.author.id, note_id)

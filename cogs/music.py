@@ -73,6 +73,8 @@ class PhotonMusicController:
                 except asyncio.TimeoutError:
                     # Five minutes without any activity hence teardown.
                     await self.teardown()
+            else:
+                track = self.prev_song
             await self.player.play(track)
             self.prev_song = track
             await self.next.wait()
@@ -100,7 +102,7 @@ class Music(commands.Cog):
         self.node_online = False
 
         if not hasattr(bot, "wavelink"):
-            self.bot.wavelink = wavelink.Client(self.bot)
+            self.bot.wavelink = wavelink.Client(bot=self.bot)
 
         self.bot.loop.create_task(self.start_nodes())
 
@@ -113,7 +115,7 @@ class Music(commands.Cog):
             for node in previous.values():
                 await node.destroy()
 
-        # Initiate nodes
+        # pylint: disable=no-member
         for settings in config.nodes.values():
             node = await self.bot.wavelink.initiate_node(**settings)
             node.set_hook(self.on_event_hook)
@@ -179,6 +181,13 @@ class Music(commands.Cog):
             return await ctx.send("No Lavalink Nodes are currently online."
                                   "Please wait and try again."
                                   "They should come online in a few minutes.")
+        elif isinstance(error, commands.BadArgument):
+            if ctx.command.name == "volume":
+                return await ctx.send("Please provide a valid integer to change the volume to.")
+            else:
+                return await ctx.send("Could not find that user.")
+        else:
+            pass
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -350,7 +359,7 @@ class Music(commands.Cog):
         await ctx.send("▶️ The player is now unpaused.")
 
     @commands.command(name="queue", aliases=["q"])
-    async def _queue(self, ctx: commands.CommandError):
+    async def _queue(self, ctx: commands.Context):
         """Lists the next five upcoming songs."""
 
         # See comment on volume command.

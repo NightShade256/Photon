@@ -13,6 +13,14 @@ class PhotonCog(commands.Cog, name="Photon"):
         self.bot = bot
         self.process = psutil.Process()
 
+    async def cog_command_error(self, ctx, error):
+        """Mini error handler for this cog."""
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send("Please provide a valid prefix string.")
+        else:
+            pass
+
     @commands.command(name="about")
     async def _about(self, ctx):
         """Get information about Photon."""
