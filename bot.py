@@ -2,15 +2,16 @@ import logging
 
 import aiohttp
 import discord
+import wavelink
 from discord.ext import commands, tasks
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.1a"
+__version__ = "1.2a"
 
 
 extensions = [
     "cogs.admin",
-    "cogs.notes", 
+    "cogs.notes",
     "cogs.utilities",
     "cogs.music",
     "cogs.moderation",
@@ -52,7 +53,8 @@ class Photon(commands.Bot):
                 self.load_extension(ext)
                 self.photon_log.info(f"{ext} extension successfully loaded.")
             except Exception as e:
-                self.photon_log.error(f"{ext} extension failed to load. EXCEPTION: {e}")
+                self.photon_log.error(
+                    f"{ext} extension failed to load. EXCEPTION: {e}")
 
     async def on_ready(self):
         self.photon_log.info(
@@ -77,3 +79,17 @@ class Photon(commands.Bot):
         except Exception:
             self.photon_log.error(
                 "Shutdown failed to occur gracefully.", exc_info=True)
+
+    async def on_command_error(self, ctx, error):
+        """Photon error handler."""
+
+        if isinstance(error, commands.CommandOnCooldown):
+            return await ctx.send(f"The command is on cooldown. Retry after **{error.retry_after:.2f}** seconds.")
+        elif isinstance(error, commands.CommandInvokeError):
+            if isinstance(error.original, wavelink.ZeroConnectedNodes):
+                return await ctx.send("No Lavalink nodes are currently online. Please try again.")
+            else:
+                self.photon_log.error(
+                    f"[ERROR] Command: {ctx.command.name} Exception: {error}")
+        else:
+            pass

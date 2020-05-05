@@ -29,7 +29,7 @@ class Moderation(commands.Cog):
 
         try:
             messages = await ctx.channel.purge(limit=(amount+1))
-        except (discord.Forbidden, discord.HTTPException) as e:
+        except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot doesn't have proper permissions or there was HTTP request failure. Please check.") 
         await ctx.send(f"\N{WASTEBASKET} **{len(messages) - 1} messages** deleted from <#{ctx.channel.id}>.", delete_after=5.0)
     
@@ -40,7 +40,7 @@ class Moderation(commands.Cog):
 
         try:
             await user.kick(reason=reason)
-        except (discord.Forbidden, discord.HTTPException) as e:
+        except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot couldn't kick the user.")
         await ctx.send("The user was successfully kicked.")
 
@@ -51,7 +51,7 @@ class Moderation(commands.Cog):
 
         try:
             await user.ban(reason=reason, delete_message_days=days)
-        except (discord.Forbidden, discord.HTTPException) as e:
+        except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot couldn't ban the user.")
         await ctx.send("The user was successfully banned.")
 
@@ -66,7 +66,7 @@ class Moderation(commands.Cog):
             if not user:
                 return await ctx.send("Could not find a user with that ID that is banned.")
             await ctx.guild.unban(user[0].user, reason=reason)
-        except (discord.Forbidden, discord.HTTPException) as e:
+        except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot couldn't unban the user.")
         await ctx.send("The user was successfully unbanned.")
     
@@ -81,7 +81,7 @@ class Moderation(commands.Cog):
         try:
             await ctx.guild.ban(user, reason=reason, delete_message_days=7)
             await user.unban(reason=f"[PHOTON] Softban command - {ctx.author.name}")
-        except (discord.Forbidden, discord.HTTPException) as e:
+        except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot couldn't softban the user.")
         await ctx.send("The user was successfully softbanned.")
 

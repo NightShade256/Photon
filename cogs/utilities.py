@@ -13,9 +13,11 @@ class Utilities(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        temp = """Please follow all advisories and guidelines issued by [WHO](https://www.who.int/emergencies/diseases/novel-coronavirus-2019/advice-for-public) and the government. We can beat the pandemic. 
-All that is required on our part is to stay home and have a bit of faith in our goverment."""
-        self.advisory = textwrap.dedent(temp)
+        temp = """Please follow all advisories and guidelines issued by
+               [WHO](https://bit.ly/2YC6pY0) and the government. We can 
+               beat the pandemic. All that is required on our part is to
+               stay home and have a bit of faith in our goverment."""
+        self.advisory = "\n".join(textwrap.wrap(temp, len(temp)))
         self.total_data = None
         self.tests_done = None
         self.last_fetched = None
@@ -97,6 +99,7 @@ All that is required on our part is to stay home and have a bit of faith in our 
         await self.data_ready.wait()
 
     @commands.command(name="covid")
+    @commands.cooldown(1, 30.0, commands.BucketType.user)
     async def _covid(self, ctx, *, country: str = "all"):
         """Provides statistics related to COVID-19 for the world.
 
@@ -124,10 +127,10 @@ All that is required on our part is to stay home and have a bit of faith in our 
         last_update = f"{temp[0].replace('-', '/')} {temp[1][:8]}"
         embed = discord.Embed(
             title=f"COVID-19 Statistics for {area}", description=self.advisory, url="https://www.bing.com/covid", colour=0x1A93E1)
-        embed.add_field(name="**• Confirmed Cases:**", value=confirmed)
-        embed.add_field(name="**• Active Cases:**", value=active)
-        embed.add_field(name="**• Recovered:**", value=recovered)
-        embed.add_field(name="**• Deaths:**", value=deaths)
+        embed.add_field(name="**• Confirmed Cases:**", value=humanize.intcomma(confirmed))
+        embed.add_field(name="**• Active Cases:**", value=humanize.intcomma(active))
+        embed.add_field(name="**• Recovered:**", value=humanize.intcomma(recovered))
+        embed.add_field(name="**• Deaths:**", value=humanize.intcomma(deaths))
         embed.add_field(name="**• Approx. Death Rate:**", value=rate)
         embed.add_field(name="**• Last Updated On:**", value=last_update)
         embed.set_footer(
@@ -135,6 +138,7 @@ All that is required on our part is to stay home and have a bit of faith in our 
         await ctx.send(embed=embed)
 
     @commands.command(name="random")
+    @commands.cooldown(1, 20.0, commands.BucketType.user)
     async def _randomn(self, ctx, start: int = 0, end: int = 10):
         """Generates a random integer number between the two specified numbers."""
         if start > end:

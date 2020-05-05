@@ -18,7 +18,8 @@ class Polls(commands.Cog):
             return await ctx.send(f"Please specify a valid channel in which the poll should be published.")
 
     @commands.command(name="poll")
-    @commands.has_guild_permissions()
+    @commands.has_guild_permissions(ban_members=True)
+    @commands.cooldown(1, 120.0, commands.BucketType.guild)
     async def _poll(self, ctx, channel: discord.TextChannel, *, question: str):
         """Creates a poll.
 
@@ -82,7 +83,7 @@ class Polls(commands.Cog):
         for emoji, _ in options:
             await poll_msg.add_reaction(emoji)
 
-        await ctx.send("Poll successfully created.")
+        await ctx.send("Poll successfully created.", delete_after=5.0)
 
 
 def setup(bot: commands.Bot):

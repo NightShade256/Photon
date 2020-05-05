@@ -10,6 +10,7 @@ class Admin(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
+        self.last_result = None
 
     async def cog_check(self, ctx):
         return await self.bot.is_owner(ctx.author)
@@ -87,7 +88,6 @@ class Admin(commands.Cog):
                 await con.execute(insert_query, ctx.guild.id, "&", None)
 
         await ctx.send("Regenerated database entry successfully.")
-
 
 def setup(bot):
     bot.add_cog(Admin(bot))

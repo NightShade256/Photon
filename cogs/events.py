@@ -4,6 +4,7 @@ import functools
 import discord
 from discord.ext import commands
 
+# pylint: disable=import-error
 from utils import canvas
 
 

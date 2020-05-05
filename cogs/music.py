@@ -177,10 +177,6 @@ class Music(commands.Cog):
         elif isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send(
                 f"{ctx.author.mention}, please provide the **{error.param.name}** parameter.")
-        elif isinstance(error, wavelink.ZeroConnectedNodes):
-            return await ctx.send("No Lavalink Nodes are currently online."
-                                  "Please wait and try again."
-                                  "They should come online in a few minutes.")
         elif isinstance(error, commands.BadArgument):
             if ctx.command.name == "volume":
                 return await ctx.send("Please provide a valid integer to change the volume to.")

@@ -57,6 +57,7 @@ class PhotonCog(commands.Cog, name="Photon"):
 
     @commands.command(name="welcome")
     @commands.has_guild_permissions(ban_members=True)
+    @commands.cooldown(1, 120.0, commands.BucketType.guild)
     async def _welcome(self, ctx: commands.Context):
         """Enable or disable welcome and leave messages."""
 
@@ -74,6 +75,7 @@ class PhotonCog(commands.Cog, name="Photon"):
 
     @commands.command(name="prefix")
     @commands.has_guild_permissions(ban_members=True)
+    @commands.cooldown(1, 120.0, commands.BucketType.guild)
     async def _prefix(self, ctx: commands.Context, *, prefix: str):
         """Change the prefix to your liking."""
 

@@ -63,15 +63,25 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.1a
+### v1.2a
 
-1. Fix a bug in the `music` cog.
-2. Add error handlers to the `photon`, `notes` cogs.
-3. Fix a incorrect type hint in the `music` cog.
-4. Fix a bug where the event loop would get closed before closure of the database pool
-   and the aiohttp web session.
-5. Disable a bunch of false positive pylint errors.
-6. **Feature-wise** no change has been made to the bot.
+1. Fix a bug in the `music` cog where even if there were no nodes connected, no error message
+   would be displayed to the user.
+
+2. Add cooldowns to many commands that are resource intensive, by which I mean
+   commands that do database queries and web requests. (A hint for a eventual event that will take place soon!)
+
+3. Disable a false positive pylint error in `events` cog.
+
+4. Add a global error handler so that cooldown errors would be conveyed properly.
+
+5. Fix a bug where anyone, even those who did not have any permission, could create a poll in a guild.
+   Also made it so that poll creation confirmation message will auto-delete itself in five seconds.
+
+6. Fixed incorrect textwrapping in the `covid` and `covindia` commands. Also add commas to the values
+   in the `covid` command.
+
+7. **Feature-wise** no change has been made to the bot.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.
