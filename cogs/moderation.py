@@ -17,6 +17,8 @@ class Moderation(commands.Cog):
                 return await ctx.send("Could not find the user.")
             else:
                 return await ctx.send("Please provide a valid amount of messages to delete.")
+        else:
+            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="prune", aliases=["purge"])
     @commands.has_guild_permissions(manage_messages=True, read_message_history=True)

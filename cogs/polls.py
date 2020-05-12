@@ -7,7 +7,7 @@ from discord.ext import commands
 class Polls(commands.Cog):
     """Create polls in Discord. [GUILD ADMIN ONLY]"""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.AutoShardedBot):
         self.bot = bot
 
     async def cog_command_error(self, ctx: commands.Context, error):
@@ -16,6 +16,8 @@ class Polls(commands.Cog):
             return await ctx.send(f"Please specify the {error.param.name} parameter.")
         elif isinstance(error, commands.BadArgument):
             return await ctx.send(f"Please specify a valid channel in which the poll should be published.")
+        else:
+            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="poll")
     @commands.has_guild_permissions(ban_members=True)
@@ -86,5 +88,5 @@ class Polls(commands.Cog):
         await ctx.send("Poll successfully created.", delete_after=5.0)
 
 
-def setup(bot: commands.Bot):
+def setup(bot: commands.AutoShardedBot):
     bot.add_cog(Polls(bot))

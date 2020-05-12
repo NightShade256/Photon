@@ -6,7 +6,7 @@ import wavelink
 from discord.ext import commands, tasks
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.2a"
+__version__ = "1.3a"
 
 
 extensions = [
@@ -36,7 +36,7 @@ async def _get_prefix(bot, msg):
         return commands.when_mentioned_or(prefix)(bot, msg)
 
 
-class Photon(commands.Bot):
+class Photon(commands.AutoShardedBot):
 
     def __init__(self, database_pool, event_loop):
         super().__init__(_get_prefix, loop=event_loop)
@@ -91,5 +91,3 @@ class Photon(commands.Bot):
             else:
                 self.photon_log.error(
                     f"[ERROR] Command: {ctx.command.name} Exception: {error}")
-        else:
-            pass

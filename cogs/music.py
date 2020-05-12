@@ -44,7 +44,7 @@ class NoControllerError(commands.CommandError):
 class PhotonMusicController:
 
     def __init__(self, ctx: commands.Context):
-        self.bot: commands.Bot = ctx.bot
+        self.bot: commands.AutoShardedBot = ctx.bot
         self.guild_id = ctx.guild.id
         self.channel = ctx.channel
         self.dj = ctx.author
@@ -96,7 +96,7 @@ class PhotonMusicController:
 
 class Music(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.AutoShardedBot):
         self.bot = bot
         self._controllers = {}
         self.node_online = False
@@ -183,7 +183,7 @@ class Music(commands.Cog):
             else:
                 return await ctx.send("Could not find that user.")
         else:
-            pass
+            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.Cog.listener()
     async def on_voice_state_update(self, member, before, after):
@@ -603,5 +603,5 @@ class Music(commands.Cog):
         await ctx.send(f"{user.mention} is now the new DJ.")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: commands.AutoShardedBot):
     bot.add_cog(Music(bot))

@@ -17,7 +17,10 @@ class Utilities(commands.Cog):
                [WHO](https://bit.ly/2YC6pY0) and the government. We can 
                beat the pandemic. All that is required on our part is to
                stay home and have a bit of faith in our goverment."""
-        self.advisory = "\n".join(textwrap.wrap(temp, len(temp)))
+        lines = temp.splitlines()
+        lines = [textwrap.dedent(line) for line in lines]
+        temp = " ".join(lines)
+        self.advisory = temp
         self.total_data = None
         self.tests_done = None
         self.last_fetched = None

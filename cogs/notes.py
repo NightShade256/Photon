@@ -26,7 +26,7 @@ class Notes(commands.Cog):
             else:
                 return await ctx.send("Please provide a valid Note ID.")
         else:
-            pass
+            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="add")
     @commands.cooldown(1, 30.0, commands.BucketType.user)

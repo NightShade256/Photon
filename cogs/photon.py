@@ -9,7 +9,7 @@ from discord.ext import commands
 class PhotonCog(commands.Cog, name="Photon"):
     """Find information related to Photon."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.AutoShardedBot):
         self.bot = bot
         self.process = psutil.Process()
 
@@ -19,7 +19,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send("Please provide a valid prefix string.")
         else:
-            pass
+            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="about")
     async def _about(self, ctx):
@@ -91,7 +91,31 @@ class PhotonCog(commands.Cog, name="Photon"):
         
         self.bot.prefix_list[ctx.guild.id] = prefix
         await ctx.send(f"The prefix was successfully changed to **`{prefix}`**.")
+    
+    @commands.command(name="ping")
+    async def _ping(self, ctx: commands.Context):
+        """Check the bot's API/WS latency.
+        
+        This command is not that useful, but can help to determine
+        if the bot is having network problems.
+        """
+
+        # Get the websocket latency for the guild's shard.
+        latency = [i for x, i in self.bot.latencies if x==ctx.guild.shard_id]
+        latency = latency[0] * 1000
+
+        # Calculate the time
+        message = await ctx.send("Calculating ping...")
+        print(message.created_at)
+
+        delta = (message.created_at - ctx.message.created_at).microseconds / 1000
+
+        fmt = f"\U0001F493 **{latency:.2f}ms**\n" \
+              f"\U00002194\U0000FE0F **{delta}ms**\n\n" \
+              f"These values are only indicative in nature."
+
+        await message.edit(content=fmt)
 
 
-def setup(bot: commands.Bot):
+def setup(bot: commands.AutoShardedBot):
     bot.add_cog(PhotonCog(bot))

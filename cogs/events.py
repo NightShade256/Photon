@@ -10,7 +10,7 @@ from utils import canvas
 
 class Events(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: commands.AutoShardedBot):
         self.bot = bot
         self.lock = asyncio.Lock()
 
@@ -35,7 +35,7 @@ class Events(commands.Cog):
 
         # With lock make image.
         async with self.lock:
-            func = functools.partial(canvas.welcome_image, avatar, member)
+            func = functools.partial(canvas.welcome_leave_image, avatar, member, True)
             image = await self.bot.loop.run_in_executor(None, func)
         file_buffer = discord.File(image, "welcome.png")
         await channel.send(file=file_buffer)
@@ -61,7 +61,7 @@ class Events(commands.Cog):
 
         # With lock make image.
         async with self.lock:
-            func = functools.partial(canvas.leave_image, avatar, member)
+            func = functools.partial(canvas.welcome_leave_image, avatar, member, False)
             image = await self.bot.loop.run_in_executor(None, func)
         file_buffer = discord.File(image, "goodbye.png")
         await channel.send(file=file_buffer)

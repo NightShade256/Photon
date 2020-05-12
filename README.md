@@ -63,25 +63,17 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.2a
+### v1.3a
 
-1. Fix a bug in the `music` cog where even if there were no nodes connected, no error message
-   would be displayed to the user.
+1. Add commands `eval` and `ping` in the `admin` and `photon` cogs respectively.
 
-2. Add cooldowns to many commands that are resource intensive, by which I mean
-   commands that do database queries and web requests. (A hint for a eventual event that will take place soon!)
+2. Fix textwrapping issue in the `covid` and `covindia` commands on mobile phones.
 
-3. Disable a false positive pylint error in `events` cog.
+3. Remove duplicated code from `canvas.py`.
 
-4. Add a global error handler so that cooldown errors would be conveyed properly.
+4. Fix error handling behaviour.
 
-5. Fix a bug where anyone, even those who did not have any permission, could create a poll in a guild.
-   Also made it so that poll creation confirmation message will auto-delete itself in five seconds.
-
-6. Fixed incorrect textwrapping in the `covid` and `covindia` commands. Also add commas to the values
-   in the `covid` command.
-
-7. **Feature-wise** no change has been made to the bot.
+5. Switch to AutoShardedBot.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.
