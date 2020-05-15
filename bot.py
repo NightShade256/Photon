@@ -6,7 +6,7 @@ import wavelink
 from discord.ext import commands, tasks
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.3a"
+__version__ = "1.4a"
 
 
 extensions = [
@@ -17,7 +17,8 @@ extensions = [
     "cogs.moderation",
     "cogs.polls",
     "cogs.photon",
-    "cogs.events"
+    "cogs.events",
+    "cogs.fun"
 ]
 
 
@@ -36,7 +37,7 @@ async def _get_prefix(bot, msg):
         return commands.when_mentioned_or(prefix)(bot, msg)
 
 
-class Photon(commands.AutoShardedBot):
+class Photon(commands.Bot):
 
     def __init__(self, database_pool, event_loop):
         super().__init__(_get_prefix, loop=event_loop)
@@ -54,7 +55,7 @@ class Photon(commands.AutoShardedBot):
                 self.photon_log.info(f"{ext} extension successfully loaded.")
             except Exception as e:
                 self.photon_log.error(
-                    f"{ext} extension failed to load. EXCEPTION: {e}")
+                    f"{ext} extension failed to load. EXCEPTION: {e.__cause__}")
 
     async def on_ready(self):
         self.photon_log.info(

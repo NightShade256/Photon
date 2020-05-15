@@ -12,7 +12,7 @@ class Notes(commands.Cog):
     A user can have 125 notes.
     """
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def cog_command_error(self, ctx, error):
@@ -139,5 +139,5 @@ class Notes(commands.Cog):
             f"[NOTE UPLOAD] NOTE_ID: {note_id} USER_ID: {ctx.author.id} USER_NAME: {ctx.author.name}")
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Notes(bot))

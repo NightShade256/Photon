@@ -9,7 +9,7 @@ from discord.ext import commands
 class PhotonCog(commands.Cog, name="Photon"):
     """Find information related to Photon."""
 
-    def __init__(self, bot: commands.AutoShardedBot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.process = psutil.Process()
 
@@ -37,8 +37,10 @@ class PhotonCog(commands.Cog, name="Photon"):
 
         # As a prerequisite for building the embed.
         desc = """Photon is a multipurpose Discord bot that aims to be user friendly and fast.
-                  It is open source under MIT license."""
-        desc = textwrap.dedent(desc)  # Needed to dedent string.
+                  It is **open source** under the **MIT license**.
+                  You can check out the source code [here](https://github.com/NightShade256/Photon)."""
+        desc = " ".join([textwrap.dedent(x) for x in desc.splitlines()])
+        desc = " ".join(textwrap.wrap(desc, len(desc)))
         url = 'https://www.python.org/static/community_logos/python-powered-w-200x80.png'
 
         # Building the embed.
@@ -100,9 +102,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         if the bot is having network problems.
         """
 
-        # Get the websocket latency for the guild's shard.
-        latency = [i for x, i in self.bot.latencies if x==ctx.guild.shard_id]
-        latency = latency[0] * 1000
+        latency = self.bot.latency * 1000
 
         # Calculate the time
         message = await ctx.send("Calculating ping...")
@@ -117,5 +117,5 @@ class PhotonCog(commands.Cog, name="Photon"):
         await message.edit(content=fmt)
 
 
-def setup(bot: commands.AutoShardedBot):
+def setup(bot: commands.Bot):
     bot.add_cog(PhotonCog(bot))

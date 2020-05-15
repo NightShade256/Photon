@@ -10,7 +10,7 @@ from utils import canvas
 
 class Events(commands.Cog):
 
-    def __init__(self, bot: commands.AutoShardedBot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.lock = asyncio.Lock()
 

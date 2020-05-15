@@ -12,7 +12,7 @@ from discord.ext import commands
 class Admin(commands.Cog):
     """Commands meant to be used only by the Bot admins."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self._last_result = None
 
@@ -47,7 +47,7 @@ class Admin(commands.Cog):
             await ctx.send("Reloaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to reload extension {name}")
-            await ctx.send(f"Failed to reload the specified extension. Exception: {e}")
+            await ctx.send(f"Failed to reload the specified extension. Exception: {e.original}")
 
     @commands.command(name="load", aliases=["lo"])
     async def _load(self, ctx, *, name: str):
@@ -62,7 +62,7 @@ class Admin(commands.Cog):
             await ctx.send("Loaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to load extension {name}")
-            await ctx.send(f"Failed to load the specified extension. Exception: {e}")
+            await ctx.send(f"Failed to load the specified extension. Exception: {e.original}")
 
     @commands.command(name="unload", aliases=["un"])
     async def _unload(self, ctx, *, name: str):
@@ -77,7 +77,7 @@ class Admin(commands.Cog):
             await ctx.send("Unloaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to unload extension {name}")
-            await ctx.send(f"Failed to unload the specified extension. Exception: {e}")
+            await ctx.send(f"Failed to unload the specified extension. Exception: {e.original}")
 
     @commands.command(name="exit", aliases=["shutdown", "quit"])
     async def _quit(self, ctx):
@@ -152,5 +152,5 @@ class Admin(commands.Cog):
                 await ctx.send(f"```py\n{value}{ret}\n```")
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Admin(bot))

@@ -44,7 +44,7 @@ class NoControllerError(commands.CommandError):
 class PhotonMusicController:
 
     def __init__(self, ctx: commands.Context):
-        self.bot: commands.AutoShardedBot = ctx.bot
+        self.bot: commands.Bot = ctx.bot
         self.guild_id = ctx.guild.id
         self.channel = ctx.channel
         self.dj = ctx.author
@@ -96,7 +96,7 @@ class PhotonMusicController:
 
 class Music(commands.Cog):
 
-    def __init__(self, bot: commands.AutoShardedBot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
         self._controllers = {}
         self.node_online = False
@@ -209,9 +209,9 @@ class Music(commands.Cog):
                     ctr.dj = m
                     return await ctr.channel.send(f"{ctr.dj.mention}, is now the new DJ for the session.")
 
-        # Teardown as no one is in the voice channel.
-        await ctr.teardown()
-        await ctr.channel.send("The DJ has left the voice channel. Ending the current session.")
+            # Teardown as no one is in the voice channel.
+            await ctr.teardown()
+            await ctr.channel.send("The DJ has left the voice channel. Ending the current session.")
 
     @commands.command(name="join", aliases=["connect"])
     async def _join(self, ctx: commands.Context):
@@ -603,5 +603,5 @@ class Music(commands.Cog):
         await ctx.send(f"{user.mention} is now the new DJ.")
 
 
-def setup(bot: commands.AutoShardedBot):
+def setup(bot: commands.Bot):
     bot.add_cog(Music(bot))

@@ -63,17 +63,16 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.3a
+### v1.4a
 
-1. Add commands `eval` and `ping` in the `admin` and `photon` cogs respectively.
+1. Added the cog `fun` with the command `tictactoe`. You can play the game with your friend or the bot.
+   Though be aware that the bot never loses : P
 
-2. Fix textwrapping issue in the `covid` and `covindia` commands on mobile phones.
+2. Added type-hints
 
-3. Remove duplicated code from `canvas.py`.
+3. Fix a text-wrapping issue in the `about` command.
 
-4. Fix error handling behaviour.
-
-5. Switch to AutoShardedBot.
+4. Beautify the COVID command.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.

@@ -5,7 +5,7 @@ from discord.ext import commands
 class Moderation(commands.Cog):
     """Commands relating to server moderation."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
     
     async def cog_command_error(self, ctx, error):
@@ -88,5 +88,5 @@ class Moderation(commands.Cog):
         await ctx.send("The user was successfully softbanned.")
 
 
-def setup(bot):
+def setup(bot: commands.Bot):
     bot.add_cog(Moderation(bot))

@@ -67,10 +67,10 @@ class Utilities(commands.Cog):
         # Pull data as prerequisite to build the embed.
         state_data = data[0]
         area = state_data['state'] if state != 'Total' else 'India'
-        confirmed = f"{state_data['confirmed']} [+{state_data['deltaconfirmed']}]"
-        active = f"{state_data['active']}"
-        recovered = f"{state_data['recovered']} [+{state_data['deltarecovered']}]"
-        deaths = f"{state_data['deaths']} [+{state_data['deltadeaths']}]"
+        confirmed = f"{humanize.intcomma(state_data['confirmed'])} [+{state_data['deltaconfirmed']}]"
+        active = f"{humanize.intcomma(state_data['active'])}"
+        recovered = f"{humanize.intcomma(state_data['recovered'])} [+{state_data['deltarecovered']}]"
+        deaths = f"{humanize.intcomma(state_data['deaths'])} [+{state_data['deltadeaths']}]"
         rate = '{:.2f}%'.format(
             ((int(state_data['deaths'])/int(state_data['confirmed']))*100))
         colour = discord.Color.dark_teal()
@@ -128,8 +128,9 @@ class Utilities(commands.Cog):
         rate = "{:.2f}%".format(((deaths/confirmed)*100))
         temp = data["lastUpdate"].split("T")
         last_update = f"{temp[0].replace('-', '/')} {temp[1][:8]}"
+        colour = discord.Colour.dark_teal()
         embed = discord.Embed(
-            title=f"COVID-19 Statistics for {area}", description=self.advisory, url="https://www.bing.com/covid", colour=0x1A93E1)
+            title=f"COVID-19 Statistics for {area}", description=self.advisory, url="https://www.bing.com/covid", colour=colour)
         embed.add_field(name="**• Confirmed Cases:**", value=humanize.intcomma(confirmed))
         embed.add_field(name="**• Active Cases:**", value=humanize.intcomma(active))
         embed.add_field(name="**• Recovered:**", value=humanize.intcomma(recovered))

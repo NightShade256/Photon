@@ -7,7 +7,7 @@ from discord.ext import commands
 class Polls(commands.Cog):
     """Create polls in Discord. [GUILD ADMIN ONLY]"""
 
-    def __init__(self, bot: commands.AutoShardedBot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def cog_command_error(self, ctx: commands.Context, error):
@@ -88,5 +88,5 @@ class Polls(commands.Cog):
         await ctx.send("Poll successfully created.", delete_after=5.0)
 
 
-def setup(bot: commands.AutoShardedBot):
+def setup(bot: commands.Bot):
     bot.add_cog(Polls(bot))
