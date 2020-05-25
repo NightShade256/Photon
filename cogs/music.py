@@ -153,7 +153,8 @@ class Music(commands.Cog):
         """Checks it the user is connected to a voice channel or not."""
 
         if not self.node_online:
-            return await ctx.send("Please wait for a second and allow the music nodes to come online.")
+            return await ctx.send(
+                "Please wait for a second and allow the music nodes to come online.")
 
         exempted_commands = ("np", "queue")
         if ctx.author.voice is None and ctx.command.name not in exempted_commands:
@@ -164,13 +165,13 @@ class Music(commands.Cog):
 
         if isinstance(error, VoiceStateError):
             return await ctx.send(
-                f"{ctx.author.mention}, please connect to a voice channel before using the command.")
+                f"{ctx.author.mention}, connect to a voice channel before using the command.")
         elif isinstance(error, NotPrivilegedError):
             return await ctx.send(
-                f"{ctx.author.mention}, someone else is listening to music right. Please wait for them to finish.")
+                f"{ctx.author.mention}, someone else is listening to music right now.")
         elif isinstance(error, IncorrectChannelError):
             return await ctx.send(
-                f"{ctx.author.mention}, please go to the session channel {error.schannel.mention}.")
+                f"{ctx.author.mention}, go to the session channel {error.schannel.mention}.")
         elif isinstance(error, NoControllerError):
             return await ctx.send(
                 "Please use `join` or `play` commands first.")
@@ -207,11 +208,13 @@ class Music(commands.Cog):
                     pass
                 else:
                     ctr.dj = m
-                    return await ctr.channel.send(f"{ctr.dj.mention}, is now the new DJ for the session.")
+                    return await ctr.channel.send(
+                        f"{ctr.dj.mention}, is now the new DJ for the session.")
 
             # Teardown as no one is in the voice channel.
             await ctr.teardown()
-            await ctr.channel.send("The DJ has left the voice channel. Ending the current session.")
+            await ctr.channel.send(
+                "The DJ has left the voice channel. Ending the current session.")
 
     @commands.command(name="join", aliases=["connect"])
     async def _join(self, ctx: commands.Context):
@@ -265,7 +268,8 @@ class Music(commands.Cog):
 
         # If it is a playlist, add first 20 songs to the queue.
         if isinstance(tracks, wavelink.TrackPlaylist):
-            await ctx.send(f"Adding {min(len(tracks.tracks), 50)} items from the playlist to the queue.")
+            await ctx.send(
+                f"Adding {min(len(tracks.tracks), 50)} items from the playlist to the queue.")
             for track in tracks.tracks[:20]:
                 await ctr.queue.put(track)
         else:
@@ -503,7 +507,8 @@ class Music(commands.Cog):
 
         # Check if the postion provided is of valid format.
         if not RSEEK.match(position):
-            return await ctx.send(f"Invalid format used. Please see `{ctx.prefix}help seek` for more.")
+            return await ctx.send(
+                f"Invalid format used. Please see `{ctx.prefix}help seek` for more.")
 
         # Define a dict which we will use to determine the format to parse the position.
         fmt_dict = {
@@ -562,7 +567,7 @@ class Music(commands.Cog):
         # Check if the equalizer provided is in the list.
         if not eq_name.lower() in eq_list:
             return await ctx.send(
-                f"Invalid equalizer name provided. See `{ctx.prefix}help eq` for a list of options.")
+                f"Invalid equalizer provided. See `{ctx.prefix}help eq` for a list of options.")
 
         # Change the equalizer.
         await ctr.player.set_eq(eq_list[eq_name])

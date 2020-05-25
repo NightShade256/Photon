@@ -3,10 +3,10 @@ import logging
 import aiohttp
 import discord
 import wavelink
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.4a"
+__version__ = "1.5a"
 
 
 extensions = [
@@ -81,11 +81,17 @@ class Photon(commands.Bot):
             self.photon_log.error(
                 "Shutdown failed to occur gracefully.", exc_info=True)
 
-    async def on_command_error(self, ctx, error):
+    async def on_command_error(self, ctx: commands.Context, error):
         """Photon error handler."""
 
         if isinstance(error, commands.CommandOnCooldown):
-            return await ctx.send(f"The command is on cooldown. Retry after **{error.retry_after:.2f}** seconds.")
+            is_owner_sync = await self.is_owner(ctx.author)
+            if is_owner_sync:
+                return await ctx.reinvoke()
+
+            return await ctx.send(
+                f"The command is on cooldown. Retry after **{error.retry_after:.2f}** seconds.")
+
         elif isinstance(error, commands.CommandInvokeError):
             if isinstance(error.original, wavelink.ZeroConnectedNodes):
                 return await ctx.send("No Lavalink nodes are currently online. Please try again.")

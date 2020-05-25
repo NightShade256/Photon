@@ -4,9 +4,10 @@ from PIL import Image, ImageDraw, ImageFont
 
 __all__ = ["welcome_leave_image"]
 
+
 def welcome_leave_image(avatar: bytes, author, mode) -> BytesIO:
     """Returns a welcome/leave image.
-    
+
     If mode == True then welcome image.
     If mode == False then leave image.
     """

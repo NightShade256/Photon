@@ -39,7 +39,7 @@ class Events(commands.Cog):
             image = await self.bot.loop.run_in_executor(None, func)
         file_buffer = discord.File(image, "welcome.png")
         await channel.send(file=file_buffer)
-    
+
     @commands.Cog.listener()
     async def on_member_remove(self, member: discord.Member):
         """Welcome/Leave message handler."""

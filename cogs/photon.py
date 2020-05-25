@@ -38,7 +38,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         # As a prerequisite for building the embed.
         desc = """Photon is a multipurpose Discord bot that aims to be user friendly and fast.
                   It is **open source** under the **MIT license**.
-                  You can check out the source code [here](https://github.com/NightShade256/Photon)."""
+                  You can find the source code [here](https://github.com/NightShade256/Photon)."""
         desc = " ".join([textwrap.dedent(x) for x in desc.splitlines()])
         desc = " ".join(textwrap.wrap(desc, len(desc)))
         url = 'https://www.python.org/static/community_logos/python-powered-w-200x80.png'
@@ -64,7 +64,8 @@ class PhotonCog(commands.Cog, name="Photon"):
         """Enable or disable welcome and leave messages."""
 
         async with self.bot.database.acquire() as con:
-            row = await con.fetchrow("SELECT welcome FROM guild WHERE guild_id = $1;", ctx.guild.id)
+            row = await con.fetchrow(
+                "SELECT welcome FROM guild WHERE guild_id = $1;", ctx.guild.id)
             if row["welcome"] is None:
                 channel_id = ctx.channel.id
             else:
@@ -90,14 +91,14 @@ class PhotonCog(commands.Cog, name="Photon"):
         async with self.bot.database.acquire() as con:
             async with con.transaction():
                 await con.execute(query, prefix, ctx.guild.id)
-        
+
         self.bot.prefix_list[ctx.guild.id] = prefix
         await ctx.send(f"The prefix was successfully changed to **`{prefix}`**.")
-    
+
     @commands.command(name="ping")
     async def _ping(self, ctx: commands.Context):
         """Check the bot's API/WS latency.
-        
+
         This command is not that useful, but can help to determine
         if the bot is having network problems.
         """

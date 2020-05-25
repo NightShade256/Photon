@@ -21,6 +21,7 @@ class Player(enum.Enum):
     NONE = 0
     SECOND = 10
 
+
 class TicTacToe:
 
     def __init__(self):
@@ -35,7 +36,7 @@ class TicTacToe:
 
         if cell != Player.NONE:
             return True
-        
+
         return False
 
     def make_move(self, num: Union[int, list], player: Player) -> bool:
@@ -83,7 +84,7 @@ class TicTacToe:
             return Player.SECOND
         elif self.check_full():
             return Player.NONE
-        
+
         return None
 
     def render_board(self) -> str:
@@ -117,7 +118,6 @@ class TicTacToe:
                     if score > best_moveset[0]:
                         best_moveset[0] = score
                         best_moveset[1] = [rcount, ccount]
-        print(best_moveset)
         self.make_move(best_moveset[1], Player.SECOND)
 
     def minimax(self, depth, is_maximizing, alpha, beta):

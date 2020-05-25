@@ -1,11 +1,8 @@
 import contextlib
-import datetime
-import functools
 import io
 import textwrap
 import traceback
 
-import discord
 from discord.ext import commands
 
 
@@ -38,7 +35,7 @@ class Admin(commands.Cog):
     async def _reload(self, ctx, *, name: str):
         """Reloads the specified extension atomically.
 
-        Example: If extension foo/test.py is to be reloaded, then 
+        Example: If extension foo/test.py is to be reloaded, then
         the name of specified should be foo.test"""
 
         try:
@@ -53,7 +50,7 @@ class Admin(commands.Cog):
     async def _load(self, ctx, *, name: str):
         """Loads the specified extension.
 
-        Example: If extension foo/test.py is to be loaded, then 
+        Example: If extension foo/test.py is to be loaded, then
         the name of specified should be foo.test"""
 
         try:
@@ -68,7 +65,7 @@ class Admin(commands.Cog):
     async def _unload(self, ctx, *, name: str):
         """Unloads the specified extension.
 
-        Example: If extension foo/test.py is to be unloaded, then 
+        Example: If extension foo/test.py is to be unloaded, then
         the name of specified should be foo.test"""
 
         try:
@@ -137,7 +134,7 @@ class Admin(commands.Cog):
         try:
             with contextlib.redirect_stdout(stdout):
                 ret = await func()
-        except Exception as e:
+        except Exception:
             value = stdout.getvalue()
             await ctx.send(f'```py\n{value}{traceback.format_exc()}\n```')
         else:

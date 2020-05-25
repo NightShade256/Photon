@@ -7,7 +7,7 @@ class Moderation(commands.Cog):
 
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-    
+
     async def cog_command_error(self, ctx, error):
         """Mini error handler for this cog."""
         if isinstance(error, commands.MissingRequiredArgument):
@@ -32,9 +32,14 @@ class Moderation(commands.Cog):
         try:
             messages = await ctx.channel.purge(limit=(amount+1))
         except (discord.Forbidden, discord.HTTPException):
-            return await ctx.send("The bot doesn't have proper permissions or there was HTTP request failure. Please check.") 
-        await ctx.send(f"\N{WASTEBASKET} **{len(messages) - 1} messages** deleted from <#{ctx.channel.id}>.", delete_after=5.0)
-    
+            return await ctx.send(
+                "The bot doesn't have proper permissions or there was HTTP request failure."
+            )
+        await ctx.send(
+            f"\N{WASTEBASKET} **{len(messages) - 1} messages** deleted from <#{ctx.channel.id}>.",
+            delete_after=5.0
+        )
+
     @commands.command(name="kick")
     @commands.has_guild_permissions(kick_members=True)
     async def _kick(self, ctx, user: discord.Member, *, reason: str = None):
@@ -71,12 +76,12 @@ class Moderation(commands.Cog):
         except (discord.Forbidden, discord.HTTPException):
             return await ctx.send("The bot couldn't unban the user.")
         await ctx.send("The user was successfully unbanned.")
-    
+
     @commands.command(name="softban")
     @commands.has_guild_permissions(ban_members=True)
     async def _softban(self, ctx, user: discord.Member, *, reason: str = None):
         """Softbans a specified user.
-        
+
         This command essentially bans a user and then unbans him immediately,
         deleting his messages from the previous seven days in the process."""
 

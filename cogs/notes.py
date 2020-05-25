@@ -36,13 +36,13 @@ class Notes(commands.Cog):
         if len(title) > 40:
             return await ctx.send("The length of the title is too long. Max Limit: 40 chars.")
 
-        limit_query = f"SELECT note_id FROM notes WHERE user_id = $1;"
+        limit_query = "SELECT note_id FROM notes WHERE user_id = $1;"
         async with self.bot.database.acquire() as con:
             notes = await con.fetch(limit_query, ctx.author.id)
 
         if len(notes) == 125:
             return await ctx.send("Users can only create **125** notes.")
-        
+
         await ctx.send("**Time Limit: 10 minutes, Character Limit: 2000 chars.**")
         await ctx.send("Enter content of the note below this message:")
 
@@ -67,7 +67,9 @@ class Notes(commands.Cog):
     @commands.command(name="list")
     @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _nlist(self, ctx, page: int = 1):
-        """Lists the notes of the user invoking the command. Specify a page number to open that page."""
+        """Lists the notes of the user invoking the command.
+
+        Specify a page number to open that page."""
 
         query = "SELECT note_id, title FROM notes WHERE user_id = $1"
         async with self.bot.database.acquire() as con:
@@ -82,8 +84,9 @@ class Notes(commands.Cog):
                 body += f"• **[{notes[0]['note_id']}]** {notes[0]['title']}\n"
                 notes.pop(0)
                 if (len(body) > page_trigger) or (len(body) < page_trigger and len(notes) == 0):
-                    embed = discord.Embed(
-                        title=f"Notes of {ctx.author.name} (Page No. {page})", description=body, colour=0xD9771C)
+                    embed = discord.Embed(title=f"Notes of {ctx.author.name} (Page No. {page})",
+                                          description=body,
+                                          colour=discord.Colour.dark_teal())
                     pages.append(embed)
                     break
             if len(notes) == 0:
@@ -102,10 +105,12 @@ class Notes(commands.Cog):
             async with con.transaction():
                 row = await con.fetchrow(query, ctx.author.id, note_id)
         if row is None:
-            return await ctx.send("No note with the specified note ID was found. Please try again.")
+            return await ctx.send(
+                "No note with the specified note ID was found. Please try again.")
         self.bot.photon_log.info(
             f"[NOTE DELETE] NOTE_ID: {note_id} USER_ID {ctx.author.id} USER_NAME: {ctx.author.name}")
-        await ctx.send(f"Note with **TITLE: {row['title']}** and **ID: {note_id}** was successfully removed.")
+        await ctx.send(
+            f"Note with **TITLE: {row['title']}** and **ID: {note_id}** was removed.")
 
     @commands.command(name="view")
     @commands.cooldown(1, 30.0, commands.BucketType.user)
@@ -116,7 +121,8 @@ class Notes(commands.Cog):
         async with self.bot.database.acquire() as con:
             row = await con.fetchrow(query, ctx.author.id, note_id)
         if row is None:
-            return await ctx.send("No note with the specified note ID was found. Please try again.")
+            return await ctx.send(
+                "No note with the specified note ID was found. Please try again.")
         embed = discord.Embed(
             title=f"[{note_id}] {row['title']}", description=row["content"], colour=0xD9771C)
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)

@@ -63,16 +63,15 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.4a
+### v1.5a
 
-1. Added the cog `fun` with the command `tictactoe`. You can play the game with your friend or the bot.
-   Though be aware that the bot never loses : P
+1. Added the ability to create **anonymous** polls, which can self-timeout, and are backed up to the database.
 
-2. Added type-hints
+2. Added cooldown bypass for owners.
 
-3. Fix a text-wrapping issue in the `about` command.
+3. Removed some debug print statements.
 
-4. Beautify the COVID command.
+4. Ran the code through flake8 and autopep8. (Increased project line limit to be 99).
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.

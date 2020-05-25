@@ -24,6 +24,19 @@ async def configure_database(pool):
             welcome bigint
         );
     """
+
+    polls_table = """
+        CREATE TABLE IF NOT EXISTS polls(
+            poll_id bigint PRIMARY KEY,
+            guild_id bigint,
+            question varchar(2000),
+            start_time timestamp with time zone,
+            end_time timestamp with time zone,
+            votes integer[],
+            options varchar(2000)[]
+        );
+    """
+
     notes_table = """
         CREATE TABLE IF NOT EXISTS notes(
             note_id bigserial PRIMARY KEY,
@@ -38,6 +51,7 @@ async def configure_database(pool):
             async with con.transaction():
                 await con.execute(guild_table)
                 await con.execute(notes_table)
+                await con.execute(polls_table)
         except Exception:
             pass
 

@@ -1,6 +1,5 @@
 import asyncio
 
-import async_timeout
 import discord
 from discord.ext import commands
 
@@ -122,7 +121,7 @@ class Fun(commands.Cog):
                     return False
                 cond = True if num <= 9 and num >= 0 else False
                 return m.channel == ctx.channel and m.author == ctx.author and cond
-            
+
             board = ttc.TicTacToe()
             board_msg = await ctx.send(board.render_board())
             self.sessions.add(ctx.channel.id)
@@ -134,23 +133,23 @@ class Fun(commands.Cog):
                     return await ctx.send(
                         "You were inactive for thirty seconds.\n"
                         "The Computer wins!")
-                
+
                 is_legal = board.make_move(int(msg.content), ttc.Player.FIRST)
                 if not is_legal:
                     return await ctx.send("Illegal Move! Stopping the game.")
-                
+
                 await msg.delete()
                 await board_msg.edit(content=board.render_board())
                 game_over = board.check_game_over()
-                
+
                 if game_over == ttc.Player.NONE:
                     return await ctx.send("Its a draw!")
 
                 # this will NEVER OCCUR! The AI is better always.
                 # there can be a draw but never a win for the player.
                 elif game_over == ttc.Player.FIRST:
-                    return await ctx.send(f"You won!")
-                
+                    return await ctx.send("You won!")
+
                 board.make_move_AI()
                 await board_msg.edit(content=board.render_board())
                 game_over = board.check_game_over()
@@ -158,8 +157,8 @@ class Fun(commands.Cog):
                 if game_over == ttc.Player.NONE:
                     return await ctx.send("Its a draw!")
                 elif game_over == ttc.Player.SECOND:
-                    return await ctx.send(f"The Computer won!")
-    
+                    return await ctx.send("The Computer won!")
+
     @_tictactoe.after_invoke
     async def _cleanup_session_set(self, ctx):
         """Cleans up the session set after the game is done."""

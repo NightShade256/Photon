@@ -14,7 +14,7 @@ class Utilities(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         temp = """Please follow all advisories and guidelines issued by
-               [WHO](https://bit.ly/2YC6pY0) and the government. We can 
+               [WHO](https://bit.ly/2YC6pY0) and the government. We can
                beat the pandemic. All that is required on our part is to
                stay home and have a bit of faith in our goverment."""
         lines = temp.splitlines()
@@ -89,9 +89,10 @@ class Utilities(commands.Cog):
                         value=self.tests_done)
         delta: datetime.timedelta = datetime.datetime.utcnow() - self.last_fetched
         fetched = humanize.naturaltime(delta)
-        footer = f"""Requested by {ctx.author.name}. Data fetched from https://www.covid19india.org {fetched}"""
-        embed.set_footer(text=footer,
-                         icon_url=ctx.author.avatar_url)
+        footer = f"""Requested by {ctx.author.name}.
+                 Data fetched from https://www.covid19india.org {fetched}"""
+        footer = textwrap.dedent(footer)
+        embed.set_footer(text=footer, icon_url=ctx.author.avatar_url)
 
         # Send the embed.
         await ctx.send(embed=embed)
@@ -128,17 +129,19 @@ class Utilities(commands.Cog):
         rate = "{:.2f}%".format(((deaths/confirmed)*100))
         temp = data["lastUpdate"].split("T")
         last_update = f"{temp[0].replace('-', '/')} {temp[1][:8]}"
-        colour = discord.Colour.dark_teal()
-        embed = discord.Embed(
-            title=f"COVID-19 Statistics for {area}", description=self.advisory, url="https://www.bing.com/covid", colour=colour)
+        embed = discord.Embed(title=f"COVID-19 Statistics for {area}",
+                              description=self.advisory,
+                              url="https://www.bing.com/covid",
+                              colour=discord.Colour.dark_teal())
         embed.add_field(name="**• Confirmed Cases:**", value=humanize.intcomma(confirmed))
         embed.add_field(name="**• Active Cases:**", value=humanize.intcomma(active))
         embed.add_field(name="**• Recovered:**", value=humanize.intcomma(recovered))
         embed.add_field(name="**• Deaths:**", value=humanize.intcomma(deaths))
         embed.add_field(name="**• Approx. Death Rate:**", value=rate)
         embed.add_field(name="**• Last Updated On:**", value=last_update)
-        embed.set_footer(
-            text=f"Requested by {ctx.author.name}. Data fetched from https://covid19.mathdro.id/", icon_url=ctx.author.avatar_url)
+
+        footer = f"Requested by {ctx.author.name}. Data fetched from https://covid19.mathdro.id/"
+        embed.set_footer(text=footer, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="random")
@@ -146,7 +149,8 @@ class Utilities(commands.Cog):
     async def _randomn(self, ctx, start: int = 0, end: int = 10):
         """Generates a random integer number between the two specified numbers."""
         if start > end:
-            return await ctx.send("The start of the range cannot be more than the end of the range.")
+            return await ctx.send(
+                "The start of the range cannot be more than the end of the range.")
         number = await self.bot.loop.run_in_executor(None, random.randint, start, end)
         await ctx.send(f"**{number}** was chosen at random.")
 
