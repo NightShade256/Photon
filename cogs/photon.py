@@ -5,11 +5,13 @@ import humanize
 import psutil
 from discord.ext import commands
 
+from bot import Photon
+
 
 class PhotonCog(commands.Cog, name="Photon"):
     """Find information related to Photon."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         self.process = psutil.Process()
 
@@ -38,7 +40,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         # As a prerequisite for building the embed.
         desc = """Photon is a multipurpose Discord bot that aims to be user friendly and fast.
                   It is **open source** under the **MIT license**.
-                  You can find the source code [here](https://github.com/NightShade256/Photon)."""
+                  You can fint the source code [here](https://github.com/NightShade256/Photon)."""
         desc = " ".join([textwrap.dedent(x) for x in desc.splitlines()])
         desc = " ".join(textwrap.wrap(desc, len(desc)))
         url = 'https://www.python.org/static/community_logos/python-powered-w-200x80.png'
@@ -57,24 +59,40 @@ class PhotonCog(commands.Cog, name="Photon"):
         # Send it!
         await ctx.send(embed=embed)
 
-    @commands.command(name="welcome")
+    @commands.group(name="welcome")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 120.0, commands.BucketType.guild)
+    @commands.cooldown(1, 10.0, commands.BucketType.guild)
     async def _welcome(self, ctx: commands.Context):
-        """Enable or disable welcome and leave messages."""
+        """Subcommands to enable or disable welcome and leave messages."""
+        if ctx.invoked_subcommand is None:
+            channel_id = await self.bot.database.get_welcome_channel(ctx.guild)
+            if channel_id is None:
+                return await ctx.send("Welcome and Leave messages are disabled in this server.")
 
-        async with self.bot.database.acquire() as con:
-            row = await con.fetchrow(
-                "SELECT welcome FROM guild WHERE guild_id = $1;", ctx.guild.id)
-            if row["welcome"] is None:
-                channel_id = ctx.channel.id
-            else:
-                channel_id = None
-            async with con.transaction():
-                query = "UPDATE guild SET welcome = $1 WHERE guild_id = $2;"
-                await con.execute(query, channel_id, ctx.guild.id)
-        fmt = "enabled" if channel_id is not None else "disabled"
-        await ctx.send(f"Welcome and Leave messages are now **{fmt}** in this channel.")
+            channel = self.bot.get_channel(channel_id)
+            if channel is None:
+                return await ctx.send("Welcome and Leave messages are disabled in this server.")
+
+            await ctx.send(
+                f"Welcome and leave messages are currently enabled in {channel.mention}.")
+
+    @_welcome.command(name="set")
+    @commands.has_guild_permissions(ban_members=True)
+    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    async def _welcome_set(self, ctx: commands.Context):
+        """Set the current channel as the welcome/leave channel."""
+
+        await self.bot.database.update_welcome_channel(ctx.guild.id, ctx.channel.id)
+        await ctx.send("The current channel was set as the welcome/leave channel.")
+
+    @_welcome.command(name="disable")
+    @commands.has_guild_permissions(ban_members=True)
+    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    async def _welcome_disable(self, ctx: commands.Context):
+        """Disables the welcome and leave messages."""
+
+        await self.bot.database.update_welcome_channel(ctx.guild.id, None)
+        await ctx.send("Welcome and Leave messages are now disabled.")
 
     @commands.command(name="prefix")
     @commands.has_guild_permissions(ban_members=True)
@@ -87,10 +105,7 @@ class PhotonCog(commands.Cog, name="Photon"):
             return await ctx.send("The prefix can only be five characters long.")
 
         # Update the prefix
-        query = "UPDATE guild SET prefix = $1 WHERE guild_id = $2;"
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                await con.execute(query, prefix, ctx.guild.id)
+        await self.bot.database.update_prefix(ctx.guild.id, prefix)
 
         self.bot.prefix_list[ctx.guild.id] = prefix
         await ctx.send(f"The prefix was successfully changed to **`{prefix}`**.")
@@ -107,16 +122,22 @@ class PhotonCog(commands.Cog, name="Photon"):
 
         # Calculate the time
         message = await ctx.send("Calculating ping...")
-        print(message.created_at)
 
         delta = (message.created_at - ctx.message.created_at).microseconds / 1000
 
         fmt = f"\U0001F493 **{latency:.2f}ms**\n" \
               f"\U00002194\U0000FE0F **{delta}ms**\n\n" \
-              f"These values are only indicative in nature."
+              f"These values are only suggestive in nature."
 
-        await message.edit(content=fmt)
+        embed = discord.Embed(title="\U0001F3D3 Pong!",
+                              description=fmt,
+                              colour=discord.Colour.dark_teal())
+
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
+
+        await message.edit(content="", embed=embed)
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(PhotonCog(bot))

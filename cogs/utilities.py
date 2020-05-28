@@ -7,11 +7,13 @@ import discord
 import humanize
 from discord.ext import commands, tasks
 
+from bot import Photon
+
 
 class Utilities(commands.Cog):
     """Commands to help simplify tasks."""
 
-    def __init__(self, bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         temp = """Please follow all advisories and guidelines issued by
                [WHO](https://bit.ly/2YC6pY0) and the government. We can
@@ -28,6 +30,15 @@ class Utilities(commands.Cog):
 
         # pylint: disable=no-member
         self._fetch_data.start()
+
+    async def cog_command_error(self, ctx, error):
+        """A mini error handler for this cog."""
+
+        if isinstance(error, commands.MissingRequiredArgument):
+            return await ctx.send(f"Please specify the **{error.param.name}** parameter.")
+        else:
+            self.bot.photon_log.error(
+                f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     # Done so as to not overwhelm the API.
     @tasks.loop(minutes=15.0)
@@ -86,12 +97,11 @@ class Utilities(commands.Cog):
         embed.add_field(name='**• Last Updated On:**',
                         value=state_data['lastupdatedtime'])
         embed.add_field(name='**• Tests Done Nationally:**',
-                        value=self.tests_done)
+                        value=humanize.intcomma(int(self.tests_done)))
         delta: datetime.timedelta = datetime.datetime.utcnow() - self.last_fetched
         fetched = humanize.naturaltime(delta)
-        footer = f"""Requested by {ctx.author.name}.
-                 Data fetched from https://www.covid19india.org {fetched}"""
-        footer = textwrap.dedent(footer)
+        footer = f"Requested by {ctx.author.name}.\n" \
+                 f"Data fetched from https://www.covid19india.org {fetched}"
         embed.set_footer(text=footer, icon_url=ctx.author.avatar_url)
 
         # Send the embed.
@@ -168,5 +178,5 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot):
+def setup(bot: Photon):
     bot.add_cog(Utilities(bot))

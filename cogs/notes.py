@@ -3,6 +3,7 @@ import io
 
 import discord
 from discord.ext import commands
+from bot import Photon
 
 
 class Notes(commands.Cog):
@@ -12,7 +13,7 @@ class Notes(commands.Cog):
     A user can have 125 notes.
     """
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
 
     async def cog_command_error(self, ctx, error):
@@ -36,12 +37,10 @@ class Notes(commands.Cog):
         if len(title) > 40:
             return await ctx.send("The length of the title is too long. Max Limit: 40 chars.")
 
-        limit_query = "SELECT note_id FROM notes WHERE user_id = $1;"
-        async with self.bot.database.acquire() as con:
-            notes = await con.fetch(limit_query, ctx.author.id)
+        is_allowed = await self.bot.database.is_allowed_notes(ctx.author.id, False)
 
-        if len(notes) == 125:
-            return await ctx.send("Users can only create **125** notes.")
+        if not is_allowed:
+            return await ctx.send("Users can only create **50** notes.")
 
         await ctx.send("**Time Limit: 10 minutes, Character Limit: 2000 chars.**")
         await ctx.send("Enter content of the note below this message:")
@@ -56,12 +55,7 @@ class Notes(commands.Cog):
             return await ctx.send("Time limit of 10 minutes reached. Please try again.")
 
         content = str(msg.content)
-        query = "INSERT INTO notes VALUES (DEFAULT, $1, $2, $3)"
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                await con.execute(query, ctx.author.id, title, content)
-        self.bot.photon_log.info(
-            f"[NOTE CREATE] USER_ID {ctx.author.id} USER_NAME: {ctx.author.name}")
+        await self.bot.database.insert_note(title, content, ctx.author.id)
         await ctx.send("Note successfully added.")
 
     @commands.command(name="list")
@@ -71,9 +65,7 @@ class Notes(commands.Cog):
 
         Specify a page number to open that page."""
 
-        query = "SELECT note_id, title FROM notes WHERE user_id = $1"
-        async with self.bot.database.acquire() as con:
-            notes = await con.fetch(query, ctx.author.id)
+        notes = await self.bot.database.fetch_notes(ctx.author.id)
         if len(notes) == 0:
             return await ctx.send("You have not created any notes.")
         page_trigger = 4000
@@ -100,31 +92,25 @@ class Notes(commands.Cog):
     async def _ndelete(self, ctx, note_id: int):
         """Deletes the note belonging to the user with the specified note ID."""
 
-        query = "DELETE FROM notes WHERE user_id = $1 AND note_id = $2 RETURNING title;"
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                row = await con.fetchrow(query, ctx.author.id, note_id)
-        if row is None:
+        title = await self.bot.database.delete_note(note_id, ctx.author.id)
+        if title is None:
             return await ctx.send(
                 "No note with the specified note ID was found. Please try again.")
-        self.bot.photon_log.info(
-            f"[NOTE DELETE] NOTE_ID: {note_id} USER_ID {ctx.author.id} USER_NAME: {ctx.author.name}")
         await ctx.send(
-            f"Note with **TITLE: {row['title']}** and **ID: {note_id}** was removed.")
+            f"Note with **Title:** `{title}` and **ID:** `{note_id}` was removed.")
 
     @commands.command(name="view")
     @commands.cooldown(1, 30.0, commands.BucketType.user)
     async def _nview(self, ctx, note_id: int):
         """View the note belonging to the user with the specified note ID."""
 
-        query = """SELECT content, title FROM notes WHERE user_id = $1 AND note_id = $2"""
-        async with self.bot.database.acquire() as con:
-            row = await con.fetchrow(query, ctx.author.id, note_id)
+        row = await self.bot.database.fetch_note(ctx.author.id, note_id)
         if row is None:
             return await ctx.send(
                 "No note with the specified note ID was found. Please try again.")
-        embed = discord.Embed(
-            title=f"[{note_id}] {row['title']}", description=row["content"], colour=0xD9771C)
+        embed = discord.Embed(title=f"[{note_id}] {row['title']}",
+                              description=row["content"],
+                              colour=discord.Colour.dark_teal())
         embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
@@ -133,17 +119,14 @@ class Notes(commands.Cog):
     async def _nfile(self, ctx, note_id: int):
         """Converts the note into a .txt file which can then be downloaded."""
 
-        query = """SELECT content, title FROM notes WHERE user_id = $1 AND note_id = $2"""
-        async with self.bot.database.acquire() as con:
-            row = await con.fetchrow(query, ctx.author.id, note_id)
+        row = await self.bot.database.fetch_note(ctx.author.id, note_id)
         if row is None:
-            return await ctx.send("No note with the specified note ID was found. Please try again.")
+            return await ctx.send(
+                "No note with the specified note ID was found. Please try again.")
         stream = io.BytesIO(bytes(row["content"], "utf-8"))
         file = discord.File(stream, f"{row['title']}.txt")
         await ctx.send(file=file)
-        self.bot.photon_log.info(
-            f"[NOTE UPLOAD] NOTE_ID: {note_id} USER_ID: {ctx.author.id} USER_NAME: {ctx.author.name}")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Notes(bot))

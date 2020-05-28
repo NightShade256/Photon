@@ -63,15 +63,15 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.5a
+### v1.6a
 
-1. Added the ability to create **anonymous** polls, which can self-timeout, and are backed up to the database.
+1. Database code refactor. Now it doesn't get in the way, while you are coding.
 
-2. Added cooldown bypass for owners.
+2. Fix text wrapping issues.
 
-3. Removed some debug print statements.
+3. Fix `skip` command bug where it would not skip a song which was on repeat.
 
-4. Ran the code through flake8 and autopep8. (Increased project line limit to be 99).
+4. Some UI changes, for ease of use.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.

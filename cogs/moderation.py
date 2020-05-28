@@ -1,11 +1,13 @@
 import discord
 from discord.ext import commands
 
+from bot import Photon
+
 
 class Moderation(commands.Cog):
     """Commands relating to server moderation."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
 
     async def cog_command_error(self, ctx, error):
@@ -93,5 +95,5 @@ class Moderation(commands.Cog):
         await ctx.send("The user was successfully softbanned.")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Moderation(bot))

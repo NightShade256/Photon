@@ -7,6 +7,7 @@ import discord
 import humanize
 from discord.ext import commands
 
+from bot import Photon
 from structs import hiddenpoll
 
 RTIME: re.Pattern = re.compile(
@@ -14,9 +15,9 @@ RTIME: re.Pattern = re.compile(
 
 
 class Polls(commands.Cog):
-    """Create polls in Discord. [GUILD ADMIN ONLY]"""
+    """Create polls in Discord."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         self.hidden_polls = {}
         self.tasks = {}
@@ -54,29 +55,7 @@ class Polls(commands.Cog):
         await ctr.message.clear_reactions()
         self.tasks.pop(poll_id)
         self.hidden_polls.pop(poll_id)
-        await self.export_to_database(datetime.datetime.utcnow(), ctr)
-
-    async def export_to_database(self, end: datetime.datetime, ctr: hiddenpoll.PollController):
-        """Export the finished poll's votes and other stats to the database."""
-
-        query = "INSERT INTO polls VALUES ($1, $2, $3, $4, $5, $6, $7);"
-
-        votes = []
-        options = []
-        for emoji, option in ctr.options:
-            votes.append(ctr.votes.retrieve(emoji))
-            options.append(option)
-
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                await con.execute(query,
-                                  ctr.message.id,
-                                  ctr.ctx.guild.id,
-                                  ctr.question,
-                                  ctr.start,
-                                  end,
-                                  votes,
-                                  options)
+        await self.bot.database.insert_poll(datetime.datetime.utcnow(), ctr)
 
     @commands.command(name="poll")
     @commands.has_guild_permissions(ban_members=True)
@@ -294,7 +273,7 @@ class Polls(commands.Cog):
         self.hidden_polls.pop(poll_id)
         task: asyncio.Task = self.tasks.pop(poll_id)
         task.cancel()
-        await self.export_to_database(datetime.datetime.utcnow(), poll_ctr)
+        await self.bot.database.insert_poll(datetime.datetime.utcnow(), poll_ctr)
         await ctx.send("The anonymous poll has been prematurely ended.")
 
     @_apoll.command(name="history")
@@ -314,10 +293,7 @@ class Polls(commands.Cog):
         be automatically be deleted from the database."""
 
         if poll_id is None:
-            query = "SELECT * FROM polls WHERE guild_id = $1;"
-            async with self.bot.database.acquire() as con:
-                async with con.transaction():
-                    past_polls = await con.fetch(query, ctx.guild.id)
+            past_polls = await self.bot.database.fetch_polls(ctx.guild.id)
 
             if not past_polls:
                 return await ctx.send(
@@ -333,10 +309,7 @@ class Polls(commands.Cog):
 
             return await ctx.send(embed=embed)
 
-        query = "SELECT * FROM polls WHERE poll_id = $1 AND guild_id = $2;"
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                past_poll = await con.fetchrow(query, poll_id, ctx.guild.id)
+        past_poll = await self.bot.database.fetch_poll(poll_id, ctx.guild.id)
 
         if past_poll is None:
             return await ctx.send("There was not past poll with the above poll ID in this guild.")
@@ -362,5 +335,5 @@ class Polls(commands.Cog):
         await ctx.send(embed=embed)
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Polls(bot))

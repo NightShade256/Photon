@@ -5,11 +5,13 @@ import traceback
 
 from discord.ext import commands
 
+from bot import Photon
+
 
 class Admin(commands.Cog):
     """Commands meant to be used only by the Bot admins."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         self._last_result = None
 
@@ -86,17 +88,8 @@ class Admin(commands.Cog):
     @commands.command(name="rdata")
     async def _rdata(self, ctx):
         """Regenerate database entry for the guild it is run in."""
-
-        # Prewrite the queries.
-        delete_query = "DELETE FROM guild WHERE guild_id = $1;"
-        insert_query = "INSERT INTO guild VALUES ($1, $2, $3);"
-
-        # Execute them.
-        async with self.bot.database.acquire() as con:
-            async with con.transaction():
-                await con.execute(delete_query, ctx.guild.id)
-                await con.execute(insert_query, ctx.guild.id, "&", None)
-
+        await self.bot.database.delete_guild_entry(ctx.guild)
+        await self.bot.database.create_guild_entry(ctx.guild)
         await ctx.send("Regenerated database entry successfully.")
 
     # Taken from Rapptz/RoboDanny.
@@ -149,5 +142,5 @@ class Admin(commands.Cog):
                 await ctx.send(f"```py\n{value}{ret}\n```")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Admin(bot))

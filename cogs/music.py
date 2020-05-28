@@ -10,6 +10,7 @@ import wavelink
 from discord.ext import commands
 
 import config
+from bot import Photon
 
 
 RURL = re.compile(r"https?:\/\/(?:www\.)?.+")
@@ -44,7 +45,7 @@ class NoControllerError(commands.CommandError):
 class PhotonMusicController:
 
     def __init__(self, ctx: commands.Context):
-        self.bot: commands.Bot = ctx.bot
+        self.bot: Photon = ctx.bot
         self.guild_id = ctx.guild.id
         self.channel = ctx.channel
         self.dj = ctx.author
@@ -96,7 +97,7 @@ class PhotonMusicController:
 
 class Music(commands.Cog):
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         self._controllers = {}
         self.node_online = False
@@ -378,9 +379,16 @@ class Music(commands.Cog):
         # Construct the embed
         upcoming = list(itertools.islice(ctr.queue._queue, 0, 5))
         base = "\n".join(f"**• `{song}`**" for song in upcoming)
+
+        if ctr.repeat:
+            fmt = f"**• `{ctr.prev_song}`** 🔂"
+            base = fmt + "\n" + base
+
         embed = discord.Embed(
             title="Upcoming:", description=base, colour=discord.Colour.dark_teal())
 
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
         # Send the embed.
         await ctx.send(embed=embed)
 
@@ -399,7 +407,8 @@ class Music(commands.Cog):
         if not ctr.is_session_channel(ctx.channel):
             raise IncorrectChannelError(ctr.channel)
 
-        # Skip the current song.
+        # Switch off repeat and skip current song.
+        ctr.repeat = False
         await ctr.player.stop()
         await ctx.send("⏩ The current song has been skipped.")
 
@@ -462,6 +471,8 @@ class Music(commands.Cog):
         embed.add_field(name="**• Duration:**", value=base_str, inline=False)
         if current.thumb is not None:
             embed.set_thumbnail(url=current.thumb)
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="repeat")
@@ -608,5 +619,5 @@ class Music(commands.Cog):
         await ctx.send(f"{user.mention} is now the new DJ.")
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Music(bot))

@@ -3,6 +3,7 @@ import asyncio
 import discord
 from discord.ext import commands
 
+from bot import Photon
 # pylint: disable=import-error
 from structs import ttc
 
@@ -10,7 +11,7 @@ from structs import ttc
 class Fun(commands.Cog):
     """Commands related to enterainment."""
 
-    def __init__(self, bot: commands.Bot):
+    def __init__(self, bot: Photon):
         self.bot = bot
         self.sessions = set()
 
@@ -166,5 +167,5 @@ class Fun(commands.Cog):
             self.sessions.remove(ctx.channel.id)
 
 
-def setup(bot: commands.Bot):
+def setup(bot: Photon):
     bot.add_cog(Fun(bot))
