@@ -79,6 +79,8 @@ class Notes(commands.Cog):
                     embed = discord.Embed(title=f"Notes of {ctx.author.name} (Page No. {page})",
                                           description=body,
                                           colour=discord.Colour.dark_teal())
+                    embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                                     icon_url=ctx.author.avatar_url)
                     pages.append(embed)
                     break
             if len(notes) == 0:
@@ -111,7 +113,8 @@ class Notes(commands.Cog):
         embed = discord.Embed(title=f"[{note_id}] {row['title']}",
                               description=row["content"],
                               colour=discord.Colour.dark_teal())
-        embed.set_footer(text=ctx.author.name, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
     @commands.command(name="file")

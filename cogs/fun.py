@@ -72,7 +72,10 @@ class Fun(commands.Cog):
                     "The opponent did not respond. The game will not start.")
             self.sessions.add(ctx.channel.id)
             board = ttc.TicTacToe()
-            board_msg = await ctx.send(board.render_board())
+            embed = discord.Embed(title=f"{ctx.author.name} v. {opponent.name}",
+                                  description=board.render_board(),
+                                  colour=discord.Colour.dark_teal())
+            board_msg = await ctx.send(embed=embed)
             while True:
                 try:
                     msg = await self.bot.wait_for(
@@ -86,7 +89,8 @@ class Fun(commands.Cog):
                 if not is_legal:
                     return await ctx.send("Illegal Move! Stopping the game.")
                 await msg.delete()
-                await board_msg.edit(content=board.render_board())
+                embed.description = board.render_board()
+                await board_msg.edit(embed=embed)
                 game_over = board.check_game_over()
 
                 if game_over == ttc.Player.NONE:
@@ -106,7 +110,8 @@ class Fun(commands.Cog):
                 if not is_legal:
                     return await ctx.send("Illegal move! Stopping the game.")
                 await msg.delete()
-                await board_msg.edit(content=board.render_board())
+                embed.description = board.render_board()
+                await board_msg.edit(embed=embed)
                 game_over = board.check_game_over()
 
                 if game_over == ttc.Player.NONE:
@@ -124,7 +129,10 @@ class Fun(commands.Cog):
                 return m.channel == ctx.channel and m.author == ctx.author and cond
 
             board = ttc.TicTacToe()
-            board_msg = await ctx.send(board.render_board())
+            embed = discord.Embed(title=f"{ctx.author.name} v. Computer",
+                                  description=board.render_board(),
+                                  colour=discord.Colour.dark_teal())
+            board_msg = await ctx.send(embed=embed)
             self.sessions.add(ctx.channel.id)
             while True:
                 try:
@@ -140,7 +148,8 @@ class Fun(commands.Cog):
                     return await ctx.send("Illegal Move! Stopping the game.")
 
                 await msg.delete()
-                await board_msg.edit(content=board.render_board())
+                embed.description = board.render_board()
+                await board_msg.edit(embed=embed)
                 game_over = board.check_game_over()
 
                 if game_over == ttc.Player.NONE:
@@ -152,7 +161,8 @@ class Fun(commands.Cog):
                     return await ctx.send("You won!")
 
                 board.make_move_AI()
-                await board_msg.edit(content=board.render_board())
+                embed.description = board.render_board()
+                await board_msg.edit(embed=embed)
                 game_over = board.check_game_over()
 
                 if game_over == ttc.Player.NONE:

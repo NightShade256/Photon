@@ -63,18 +63,14 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.6a
+### v1.7a
 
-1. Database code refactor. Now it doesn't get in the way, while you are coding.
+1. Added the `pypi` command, that can query information about packages listed on the Python Package Index (PyPI).
 
-2. Fix text wrapping issues.
-
-3. Fix `skip` command bug where it would not skip a song which was on repeat.
-
-4. Some UI changes, for ease of use.
+2. UI changes.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
-hence you can expect daily updates to the code, to increase stability, intuitiveness, performance.
+hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.
 
 ## Contributing
 
@@ -93,6 +89,8 @@ Photon is licensed under the MIT License.
 3. A few snippets of code were used from the RoboDanny project by Rapptz, which can be found [here](https://github.com/Rapptz/RoboDanny)
 
 4. The Welcome and Goodbye base images are taken from the [Gearz](https://github.com/TheDiscordians/Gearz) bot (now defunct), with permission from the author of the bot.
+
+5. A `.png` version of the PyPI logo is used in the project. The logo rightfully belongs to PyPI. Photon is in no form or way affiliated to PyPI.
 
 ## Support
 

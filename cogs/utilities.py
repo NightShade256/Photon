@@ -143,9 +143,12 @@ class Utilities(commands.Cog):
                               description=self.advisory,
                               url="https://www.bing.com/covid",
                               colour=discord.Colour.dark_teal())
-        embed.add_field(name="**• Confirmed Cases:**", value=humanize.intcomma(confirmed))
-        embed.add_field(name="**• Active Cases:**", value=humanize.intcomma(active))
-        embed.add_field(name="**• Recovered:**", value=humanize.intcomma(recovered))
+        embed.add_field(name="**• Confirmed Cases:**",
+                        value=humanize.intcomma(confirmed))
+        embed.add_field(name="**• Active Cases:**",
+                        value=humanize.intcomma(active))
+        embed.add_field(name="**• Recovered:**",
+                        value=humanize.intcomma(recovered))
         embed.add_field(name="**• Deaths:**", value=humanize.intcomma(deaths))
         embed.add_field(name="**• Approx. Death Rate:**", value=rate)
         embed.add_field(name="**• Last Updated On:**", value=last_update)
@@ -172,9 +175,65 @@ class Utilities(commands.Cog):
 
         if user is None:
             user = ctx.author
-        avatar_url = str(user.avatar_url_as(format="png", static_format="png", size=1024))
+        avatar_url = str(user.avatar_url_as(
+            format="png", static_format="png", size=1024))
         embed = discord.Embed(colour=discord.Color.dark_teal())
         embed.set_image(url=avatar_url)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="pypi")
+    @commands.cooldown(1, 20.0, commands.BucketType.user)
+    async def _pypi(self, ctx, *, package_name: str):
+        """Displays information about a package listed on PyPI."""
+
+        # Define the URL we are going to make GET request to.
+        api_url = f"https://pypi.org/pypi/{package_name}/json"
+        ico = "https://raw.githubusercontent.com/nlhkabu/warehouse-ui/gh-pages/img/pypi-sml.png"
+
+        # Make the GET request.
+        async with self.bot.web.get(api_url) as resp:
+
+            # If the status is non-200 tell the user to check the package name
+            if resp.status != 200:
+                return await ctx.send("Please check the package name and try again.")
+
+            # Decode the JSON data.
+            data = await resp.json()
+
+        desc = f"```{data['info']['summary']}```\n"
+        inst = f"`pip install {package_name}`"
+
+        # Construct the Embed.
+        embed = discord.Embed(title=package_name,
+                              description=desc,
+                              colour=discord.Colour.dark_teal())
+
+        # Add embed fields.
+        embed.add_field(name="**• Author**", value=str(data["info"]["author"]))
+        embed.add_field(name="**• Latest Release**",
+                        value=str(data["info"]["version"]))
+
+        if data["info"]["license"]:
+            embed.add_field(name="**• License**",
+                            value=data["info"]["license"])
+
+        # If home page isn't empty, make a embeded link.
+        if data["info"]["home_page"]:
+            fmt = f"[Click to visit!]({data['info']['home_page']})"
+            embed.add_field(name="**• Home Page**", value=fmt)
+
+        pypi_page = f"[Click to visit!]({data['info']['project_url']})"
+        embed.add_field(name="**• PyPI Page**", value=pypi_page)
+        embed.add_field(name="**• Install Using**", value=inst)
+
+        footer = f"Requested by {ctx.author.name}.\n" \
+                 "This bot is not affiliated with PyPI in anyway."
+
+        embed.set_footer(text=footer,
+                         icon_url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ico)
+
+        # Send the embed.
         await ctx.send(embed=embed)
 
 
