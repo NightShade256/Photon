@@ -37,6 +37,10 @@ Photon can be self hosted on any platform of your choice.
             "region": "india"
         }
     }
+
+    api_keys = {
+        "owlapi": "API KEY"
+    }
     ```
 
     Change the values wherever necessary.
@@ -63,14 +67,15 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.7a
+### v1.8.0
 
-1. Added the `pypi` command, that can query information about packages listed on the Python Package Index (PyPI).
-
-2. UI changes.
+1. Added the `dictionary` command, with alias `dict`. It is powered by the API found [here](https://owlbot.info).
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.
+
+The project has switched to the semantic versioning system since version `1.8.0`.
+Incompatible changes in the `config.py` file are not factored in the semantic versioning for this project.
 
 ## Contributing
 
@@ -92,7 +97,9 @@ Photon is licensed under the MIT License.
 
 5. A `.png` version of the PyPI logo is used in the project. The logo rightfully belongs to PyPI. Photon is in no form or way affiliated to PyPI.
 
+6. The OWL Dictionary API is used in this project. It can be found [here](https://owlbot.info)
+
 ## Support
 
-Please feel free to contact me on Discord, if you have any query regarding Photon.
-Username: `__NightShade256__#5169`
+Please join the official support server on Discord.  
+Link: <https://discord.gg/hhRQUa4>

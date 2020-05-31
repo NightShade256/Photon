@@ -1,13 +1,18 @@
 import asyncio
 import datetime
 import random
+import re
 import textwrap
 
+import aiohttp
 import discord
 import humanize
 from discord.ext import commands, tasks
 
+import config
 from bot import Photon
+
+RHTML = re.compile(r"<.*?>")
 
 
 class Utilities(commands.Cog):
@@ -234,6 +239,62 @@ class Utilities(commands.Cog):
         embed.set_thumbnail(url=ico)
 
         # Send the embed.
+        await ctx.send(embed=embed)
+
+    @commands.command(name="dictionary", aliases=["dict"])
+    @commands.cooldown(1, 20.0, commands.BucketType.user)
+    async def _dictionary(self, ctx, *, word: str):
+        """Get the meaning for an English word or phrase.
+
+        If the examples sometimes say None don't panic.
+        The bot uses an API which has less examples documented.
+        In the future there will be a switch of APIs."""
+
+        req_url = f"https://owlbot.info/api/v4/dictionary/{word}"
+        headers = {
+            "Authorization": f"Token {config.api_keys['owlapi']}"
+        }
+
+        async with self.bot.web.get(req_url, headers=headers) as resp:
+            if resp.status != 200:
+                return await ctx.send("Please check the entered word, and try again.")
+
+            try:
+                data = await resp.json()
+            except aiohttp.ContentTypeError:
+                return await ctx.send("Please check the entered word, and try again.")
+
+        if data["pronunciation"] is not None:
+            fmt = f"**Pronunciation:** `{data['pronunciation']}`\n"
+        else:
+            fmt = ""
+
+        sorted_definitions: list = data["definitions"][:5]
+        sorted_definitions.sort(key=lambda k: k["type"])
+
+        current_type = None
+        for count, definition in enumerate(sorted_definitions):
+
+            if current_type is None or definition["type"] != current_type:
+                current_type = definition["type"]
+                fmt += f"\n***{current_type}***\n\n"
+            example = str(RHTML.sub("", str(definition['example'])))
+            fmt += f"{count+1}. *{definition['definition']}*\n"
+            fmt += f"**Example:** `{example}`\n" if example != "None" else ""
+
+        embed = discord.Embed(title=f"\U0001F4DA  {word.title()}",
+                              description=fmt,
+                              colour=discord.Colour.dark_teal())
+
+        footer = f"Requested by {ctx.author.name}. " \
+                 "Powered by owlbot.info API."
+
+        image = data["definitions"][0]["image_url"]
+
+        if image is not None:
+            embed.set_thumbnail(url=image)
+
+        embed.set_footer(text=footer, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
 
