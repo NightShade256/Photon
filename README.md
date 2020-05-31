@@ -67,9 +67,9 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.8.0
+### v1.8.1
 
-1. Added the `dictionary` command, with alias `dict`. It is powered by the API found [here](https://owlbot.info).
+1. Fixed a bug, where the database pool was not gracefully shutdown during bot shutdown process.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.

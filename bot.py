@@ -74,7 +74,7 @@ class Photon(commands.Bot):
         try:
             await super().close()
             await self.web.close()
-            await self.database.close()
+            await self.database.close_database_pool()
             self.photon_log.info(
                 "Shutdown attempt successful. Photon has been closed.")
         except Exception:
