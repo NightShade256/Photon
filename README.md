@@ -67,9 +67,9 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.8.1
+### v1.9.0
 
-1. Fixed a bug, where the database pool was not gracefully shutdown during bot shutdown process.
+1. Added the `serverinfo` command with the alias `si`.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.

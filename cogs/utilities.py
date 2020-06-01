@@ -297,6 +297,59 @@ class Utilities(commands.Cog):
         embed.set_footer(text=footer, icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
+    @commands.command(name="serverinfo", aliases=["si"])
+    async def _serverinfo(self, ctx: commands.Context):
+        """Gives information about the server in which it is invoked."""
+
+        # Create a embed.
+        embed = discord.Embed(title=ctx.guild.name,
+                              colour=discord.Colour.dark_teal())
+
+        # Add owner and guild id fields.
+        embed.add_field(name="Owner", value=str(ctx.guild.owner.name))
+        embed.add_field(name="Guild ID", value=ctx.guild.id)
+
+        # Clean the voice region string and add that as a field.
+        region = str(ctx.guild.region).replace("_", " ").title()
+        region = region.replace("Us", "US").replace("Vip", "VIP")
+        region = region.replace("-", " ")
+        embed.add_field(name="Voice Region", value=region)
+
+        # Count the number of emojis and animated emojis, and add a field.
+        normal_emojis = len([x for x in ctx.guild.emojis if not x.animated])
+        animated_emojis = len([x for x in ctx.guild.emojis if x.animated])
+        emoji_fmt = f"Static: {normal_emojis}\n" \
+                    f"Animated: {animated_emojis}"
+        embed.add_field(name="Emojis", value=emoji_fmt)
+
+        # Count the number of voice and text channels.
+        channels = f"Text: {len(ctx.guild.text_channels)}\n" \
+                   f"Voice: {len(ctx.guild.voice_channels)}"
+        embed.add_field(name="Channels", value=channels)
+
+        # Calculate members, bots and otherwise.
+        users = len([x for x in ctx.guild.members if not x.bot])
+        bots = len(ctx.guild.members) - users
+        fmt = f"Users: {users}\n" \
+              f"Bots: {bots}"
+        embed.add_field(name="Members", value=fmt)
+
+        embed.add_field(name="Roles", value=len(ctx.guild.roles))
+        embed.add_field(name="Boosts", value=len(
+            ctx.guild.premium_subscribers))
+
+        # Clean verification level and add a field.
+        verif = str(ctx.guild.verification_level).replace("_", " ").title()
+        embed.add_field(name="Verification Level", value=verif)
+
+        # Set the footer and thumbnail.
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
+        embed.set_thumbnail(url=ctx.guild.icon_url)
+
+        # Send the embed.
+        await ctx.send(embed=embed)
+
 
 def setup(bot: Photon):
     bot.add_cog(Utilities(bot))
