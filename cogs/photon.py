@@ -40,7 +40,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         # As a prerequisite for building the embed.
         desc = """Photon is a multipurpose Discord bot that aims to be user friendly and fast.
                   It is **open source** under the **MIT license**.
-                  You can fint the source code [here](https://github.com/NightShade256/Photon)."""
+                  You can find the source code [here](https://github.com/NightShade256/Photon)."""
         desc = " ".join([textwrap.dedent(x) for x in desc.splitlines()])
         desc = " ".join(textwrap.wrap(desc, len(desc)))
         url = 'https://www.python.org/static/community_logos/python-powered-w-200x80.png'
