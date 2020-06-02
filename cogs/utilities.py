@@ -83,9 +83,11 @@ class Utilities(commands.Cog):
         # Pull data as prerequisite to build the embed.
         state_data = data[0]
         area = state_data['state'] if state != 'Total' else 'India'
-        confirmed = f"{humanize.intcomma(state_data['confirmed'])} [+{state_data['deltaconfirmed']}]"
+        confirmed = f"{humanize.intcomma(state_data['confirmed'])} " \
+                    f"[+{state_data['deltaconfirmed']}]"
         active = f"{humanize.intcomma(state_data['active'])}"
-        recovered = f"{humanize.intcomma(state_data['recovered'])} [+{state_data['deltarecovered']}]"
+        recovered = f"{humanize.intcomma(state_data['recovered'])} " \
+                    f"[+{state_data['deltarecovered']}]"
         deaths = f"{humanize.intcomma(state_data['deaths'])} [+{state_data['deltadeaths']}]"
         rate = '{:.2f}%'.format(
             ((int(state_data['deaths'])/int(state_data['confirmed']))*100))
@@ -180,9 +182,10 @@ class Utilities(commands.Cog):
 
         if user is None:
             user = ctx.author
-        avatar_url = str(user.avatar_url_as(
-            format="png", static_format="png", size=1024))
+        avatar_url = str(user.avatar_url_as(static_format="png", size=1024))
         embed = discord.Embed(colour=discord.Color.dark_teal())
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
         embed.set_image(url=avatar_url)
         await ctx.send(embed=embed)
 
@@ -346,6 +349,43 @@ class Utilities(commands.Cog):
         embed.set_footer(text=f"Requested by {ctx.author.name}.",
                          icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url=ctx.guild.icon_url)
+
+        # Send the embed.
+        await ctx.send(embed=embed)
+
+    @commands.command(name="userinfo", aliases=["ui"])
+    async def _userinfo(self, ctx, user: discord.Member):
+        """Gives information about a user."""
+
+        # Create the embed.
+        embed = discord.Embed(title=user.display_name,
+                              colour=discord.Colour.dark_teal())
+
+        embed.add_field(name="Username",
+                        value=user.name+"#"+user.discriminator)
+        embed.add_field(name="User ID", value=user.id)
+        embed.add_field(name="Bot", value=str(user.bot))
+
+        delta_create = datetime.datetime.utcnow() - user.created_at
+        create_fmt = f"{user.created_at.strftime('%d/%m/%Y %H:%M:%S')} " \
+                     f"({humanize.naturaltime(delta_create)})"
+        embed.add_field(name="Account Created", value=create_fmt)
+
+        delta_join = datetime.datetime.utcnow() - user.joined_at
+        join_fmt = f"{user.joined_at.strftime('%d/%m/%Y %H:%M:%S')} " \
+                   f"({humanize.naturaltime(delta_join)})"
+        embed.add_field(name="Joined Guild", value=join_fmt)
+        boost = "Yes" if user.premium_since is not None else "No"
+        embed.add_field(name="Server Booster", value=boost)
+
+        roles = [x.mention for x in user.roles]
+        roles.pop(0)
+        roles_fmt = " ".join(roles)
+        embed.add_field(name="Roles", value=roles_fmt)
+
+        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_footer(text=f"Requested by {ctx.author.name}.",
+                         icon_url=ctx.author.avatar_url)
 
         # Send the embed.
         await ctx.send(embed=embed)

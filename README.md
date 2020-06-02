@@ -67,9 +67,13 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.9.1
+### v1.10.0
 
-1. Fixed a spelling mistake. My bad!
+1. Added the `userinfo` command with alias `ui`.
+
+2. Fixed a bug where the `avatar` command would not correctly display an animated avatar.
+
+3. Fixed a bug where you couldn't use commands by mentioning the bot.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.

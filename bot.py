@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils import db
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.9.1"
+__version__ = "1.10.0"
 
 
 extensions = [
@@ -26,7 +26,7 @@ extensions = [
 
 async def _get_prefix(bot, msg):
     if msg.guild.id in bot.prefix_list:
-        return bot.prefix_list[msg.guild.id]
+        return commands.when_mentioned_or(bot.prefix_list[msg.guild.id])(bot, msg)
     else:
         precord = await bot.database.fetch_prefix(msg.guild.id)
         if precord is None:
@@ -64,6 +64,10 @@ class Photon(commands.Bot):
     async def on_message(self, message):
         if message.guild is None:
             return
+
+        if message.author.bot:
+            return
+
         await self.process_commands(message)
 
     def run(self, api_token):
