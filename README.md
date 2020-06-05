@@ -8,7 +8,7 @@ Photon can be self hosted on any platform of your choice.
 
 ### Windows and Linux
 
-1. Install Python 3.8 or higher, Java 13, PostgreSQL server 12. Signup with all the APIs mentioned in the [acknowledgements][#acknowledgements].
+1. Install Python 3.8 or higher, Java 13, PostgreSQL server 12. Signup with all the APIs mentioned in the [acknowledgements](#acknowledgements).
 
 2. Create the a user and a database in PostgreSQL:
 
