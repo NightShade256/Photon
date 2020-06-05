@@ -63,8 +63,13 @@ class PhotonCog(commands.Cog, name="Photon"):
     @commands.has_guild_permissions(ban_members=True)
     @commands.cooldown(1, 10.0, commands.BucketType.guild)
     async def _welcome(self, ctx: commands.Context):
-        """Subcommands to enable or disable welcome and leave messages."""
-        if ctx.invoked_subcommand is None:
+        """Subcommands to enable or disable welcome and leave messages.
+
+        When used without a subcommand, this command shows the current status
+        of the welcome and leave messages. That is if they are enabled it will
+        show the channel in which they are enabled and if they are disabled it
+        will show that they are disabled."""
+        if ctx.invoked_subcommand is None and ctx.subcommand_passed is None:
             channel_id = await self.bot.database.get_welcome_channel(ctx.guild)
             if channel_id is None:
                 return await ctx.send("Welcome and Leave messages are disabled in this server.")
@@ -75,6 +80,8 @@ class PhotonCog(commands.Cog, name="Photon"):
 
             await ctx.send(
                 f"Welcome and leave messages are currently enabled in {channel.mention}.")
+        elif ctx.invoked_subcommand is None and ctx.subcommand_passed is not None:
+            return await ctx.send("That is not a valid subcommand!")
 
     @_welcome.command(name="set")
     @commands.has_guild_permissions(ban_members=True)

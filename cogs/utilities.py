@@ -338,7 +338,7 @@ class Utilities(commands.Cog):
         embed.add_field(name="Members", value=fmt)
 
         embed.add_field(name="Roles", value=len(ctx.guild.roles))
-        embed.add_field(name="Boosts", value=len(
+        embed.add_field(name="Server Boosters", value=len(
             ctx.guild.premium_subscribers))
 
         # Clean verification level and add a field.
@@ -354,40 +354,119 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="userinfo", aliases=["ui"])
-    async def _userinfo(self, ctx, user: discord.Member):
+    async def _userinfo(self, ctx, user: discord.Member = None):
         """Gives information about a user."""
+        if user is None:
+            user = ctx.author
 
         # Create the embed.
         embed = discord.Embed(title=user.display_name,
                               colour=discord.Colour.dark_teal())
 
         embed.add_field(name="Username",
-                        value=user.name+"#"+user.discriminator)
+                        value=user.name+"#"+user.discriminator, inline=False)
         embed.add_field(name="User ID", value=user.id)
         embed.add_field(name="Bot", value=str(user.bot))
+        boost = "Yes" if user.premium_since is not None else "No"
+        embed.add_field(name="Server Booster", value=boost)
 
         delta_create = datetime.datetime.utcnow() - user.created_at
-        create_fmt = f"{user.created_at.strftime('%d/%m/%Y %H:%M:%S')} " \
+        create_fmt = f"{user.created_at.strftime('%d/%m/%Y %H:%M:%S')}\n" \
                      f"({humanize.naturaltime(delta_create)})"
         embed.add_field(name="Account Created", value=create_fmt)
 
         delta_join = datetime.datetime.utcnow() - user.joined_at
-        join_fmt = f"{user.joined_at.strftime('%d/%m/%Y %H:%M:%S')} " \
+        join_fmt = f"{user.joined_at.strftime('%d/%m/%Y %H:%M:%S')}\n" \
                    f"({humanize.naturaltime(delta_join)})"
         embed.add_field(name="Joined Guild", value=join_fmt)
-        boost = "Yes" if user.premium_since is not None else "No"
-        embed.add_field(name="Server Booster", value=boost)
 
         roles = [x.mention for x in user.roles]
         roles.pop(0)
         roles_fmt = " ".join(roles)
-        embed.add_field(name="Roles", value=roles_fmt)
+        if not roles_fmt:
+            roles_fmt = "None"
+        embed.add_field(name="Roles", value=roles_fmt, inline=False)
 
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f"Requested by {ctx.author.name}.",
                          icon_url=ctx.author.avatar_url)
 
         # Send the embed.
+        await ctx.send(embed=embed)
+
+    @commands.command(name="wikipedia", aliases=["wiki"])
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
+    async def _wikipedia(self, ctx, *, query: str):
+        """Search Wikipedia for a given term."""
+
+        params_search = {
+            "action": "query",
+            "format": "json",
+            "list": "search",
+            "srsearch": f"""intitle:{query}~ OR intitle:"{query}"~""",
+            "srlimit": 2,
+            "srsort": "relevance",
+            "srwhat": "text",
+            "srqiprofile": "mlr-1024rs"
+        }
+
+        url = "https://en.wikipedia.org/w/api.php"
+
+        async with self.bot.web.get(url, params=params_search) as resp:
+            search_data = await resp.json()
+
+        if not search_data["query"]["search"]:
+            return await ctx.send("Please check the search term and try again.")
+
+        title = search_data["query"]["search"][0]["title"]
+
+        params_get = {
+            "action": "query",
+            "format": "json",
+            "prop": "extracts|info|pageimages",
+            "exsentences": 10,
+            "exintro": "true",
+            "explaintext": "true",
+            "inprop": "url",
+            "pithumbsize": 512,
+            "redirects": 1,
+            "formatversion": 2,
+            "titles": title
+        }
+
+        async with self.bot.web.get(url, params=params_get) as resp:
+            get_data = await resp.json()
+
+        page = get_data["query"]["pages"][0]
+
+        if page.get("missing", False):
+            return await ctx.send("Please check the query and try again.")
+
+        embed = discord.Embed(title=page["title"],
+                              colour=discord.Colour.dark_teal())
+
+        link = page["fullurl"]
+
+        if page["extract"] == f"{page['title']} may refer to:":
+            return await ctx.send("Your query is ambiguous. Please specify more details.")
+
+        if len(page["extract"]) < 500:
+            description = page["extract"]
+        else:
+            description = f"{page['extract'][:500]}...\n[Read More]({link})"
+
+        if page.get("thumbnail", None) is not None:
+            embed.set_image(url=page["thumbnail"]["source"])
+        else:
+            icon = "https://www.wikipedia.org/portal/wikipedia.org/" \
+                   "assets/img/Wikipedia-logo-v2.png"
+            embed.set_thumbnail(url=icon)
+
+        embed.description = description
+        embed.url = link
+        embed.set_footer(text=f"Requested by {ctx.author.name}. Powered by Wikipedia API",
+                         icon_url=ctx.author.avatar_url)
+
         await ctx.send(embed=embed)
 
 

@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils import db
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.10.0"
+__version__ = "1.11.0"
 
 
 extensions = [

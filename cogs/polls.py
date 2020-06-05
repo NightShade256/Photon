@@ -136,7 +136,7 @@ class Polls(commands.Cog):
         You the command without any subcommand to view ongoing anonymous polls.
         Use the subcommand history to view previous anonymous polls."""
 
-        if ctx.invoked_subcommand is None:
+        if ctx.invoked_subcommand is None and ctx.subcommand_passed is None:
             ongoing_apolls = [poll for poll in self.hidden_polls.values(
             ) if poll.ctx.guild.id == ctx.guild.id]
             if not ongoing_apolls:
@@ -156,6 +156,8 @@ class Polls(commands.Cog):
                              icon_url=ctx.author.avatar_url)
 
             await ctx.send(embed=embed)
+        elif ctx.invoked_subcommand is None and ctx.subcommand_passed is not None:
+            return await ctx.send("That is not a valid subcommand!")
 
     @_apoll.command(name="new")
     @commands.has_guild_permissions(ban_members=True)
@@ -163,6 +165,7 @@ class Polls(commands.Cog):
     async def _apoll_new(self, ctx, time_limit, channel: discord.TextChannel, *, question: str):
         """Create a new anonymous poll.
 
+        The time limit of the poll is the time in which it will end.
         The format for time limit is HH:MM
         where HH is for hours and MM is for minutes respectively.
         You can drop the HH part if you want a short poll.

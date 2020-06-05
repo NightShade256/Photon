@@ -8,7 +8,7 @@ Photon can be self hosted on any platform of your choice.
 
 ### Windows and Linux
 
-1. Install Python 3.8 or higher, Java 13, PostgreSQL server 12.
+1. Install Python 3.8 or higher, Java 13, PostgreSQL server 12. Signup with all the APIs mentioned in the [acknowledgements][#acknowledgements].
 
 2. Create the a user and a database in PostgreSQL:
 
@@ -67,13 +67,15 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.10.0
+### v1.11.0
 
-1. Added the `userinfo` command with alias `ui`.
+1. Added the `wikipedia` command with the alias `wiki`. You can search wikipedia withinn Discord with minimal effort. There will be times when the search isn't quite right, this is not the fault of the bot rather it is the Wikipedia API that is at fault.
 
-2. Fixed a bug where the `avatar` command would not correctly display an animated avatar.
+2. Fix the `userinfo` command's UI.
 
-3. Fixed a bug where you couldn't use commands by mentioning the bot.
+3. Fix bug in `welcome` and `apoll` where it would not quite detect when a wrong subcommand was passed.
+
+4. Fix a bug in the `reload`, `load` and `unload` commands.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.

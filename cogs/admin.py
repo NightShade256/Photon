@@ -46,7 +46,7 @@ class Admin(commands.Cog):
             await ctx.send("Reloaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to reload extension {name}")
-            await ctx.send(f"Failed to reload the specified extension. Exception: {e.original}")
+            await ctx.send(f"Failed to reload the specified extension. Exception: {e}")
 
     @commands.command(name="load", aliases=["lo"])
     async def _load(self, ctx, *, name: str):
@@ -61,7 +61,7 @@ class Admin(commands.Cog):
             await ctx.send("Loaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to load extension {name}")
-            await ctx.send(f"Failed to load the specified extension. Exception: {e.original}")
+            await ctx.send(f"Failed to load the specified extension. Exception: {e}")
 
     @commands.command(name="unload", aliases=["un"])
     async def _unload(self, ctx, *, name: str):
@@ -76,7 +76,7 @@ class Admin(commands.Cog):
             await ctx.send("Unloaded the specified extension successfully.")
         except Exception as e:
             self.bot.photon_log.error(f"Failed to unload extension {name}")
-            await ctx.send(f"Failed to unload the specified extension. Exception: {e.original}")
+            await ctx.send(f"Failed to unload the specified extension. Exception: {e}")
 
     @commands.command(name="exit", aliases=["shutdown", "quit"])
     async def _quit(self, ctx):
