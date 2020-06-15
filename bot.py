@@ -106,9 +106,11 @@ class Photon(commands.Bot):
                 self.photon_log.error(
                     f"[ERROR] Command: {ctx.command.name} Exception: {error}")
 
-    @tasks.loop(hours=1.0)
+    @tasks.loop(minutes=15.0)
     async def discord_bot_list(self):
-        """Posts the bot statistics to DBL every hour."""
+        """Posts the bot statistics to DBL fifteen minutes."""
+
+        self.photon_log.info("Trying to post statistics to DBL.")
 
         try:
             api_key = config.bot_lists["dbl"]
