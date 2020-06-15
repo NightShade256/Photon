@@ -157,6 +157,7 @@ class PhotonCog(commands.Cog, name="Photon"):
     async def discord_bot_list(self):
         """Posts the bot statistics to DBL fifteen minutes."""
 
+        await self.bot.wait_until_ready()
         self.bot.photon_log.info("Trying to post statistics to DBL.")
 
         try:
@@ -164,7 +165,8 @@ class PhotonCog(commands.Cog, name="Photon"):
         except Exception:
             return
 
-        client_id = self.bot.user.id
+        app_info = await self.bot.application_info()
+        client_id = app_info.id
         api_url = f"https://discordbotlist.com/api/v1/bots/{client_id}/stats"
 
         params = {
