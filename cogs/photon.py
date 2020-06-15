@@ -35,7 +35,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         cpu_usage = self.process.cpu_percent() / psutil.cpu_count()
         # Get the total server and users that photon serves
         guilds = len(self.bot.guilds)
-        unique_users = sum(1 for x in self.bot.get_all_members())
+        unique_users = len(self.bot.users)
 
         # As a prerequisite for building the embed.
         desc = """Photon is a multipurpose Discord bot that aims to be user friendly and fast.

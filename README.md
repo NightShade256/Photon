@@ -41,6 +41,11 @@ Photon can be self hosted on any platform of your choice.
     api_keys = {
         "owlapi": "API KEY"
     }
+
+    # Optional
+    bot_lists = {
+        "dbl": "discordbotlist token"
+    }
     ```
 
     Change the values wherever necessary.
@@ -67,11 +72,12 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.11.1
+### v1.11.2
 
-1. Fix grammatical mistakes.
+1. Add support for posting statistics to DBL.
 
-2. Comply with [top.gg](https://top.gg) rules.
+You have to change your `config.py` to contain another dictionary called `bot_lists`.
+This is not mandatory.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.
