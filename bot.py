@@ -8,7 +8,7 @@ from discord.ext import commands
 from utils import db
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.11.0"
+__version__ = "1.11.1"
 
 
 extensions = [
@@ -95,7 +95,8 @@ class Photon(commands.Bot):
 
             return await ctx.send(
                 f"The command is on cooldown. Retry after **{error.retry_after:.2f}** seconds.")
-
+        elif isinstance(error, commands.NSFWChannelRequired):
+            return await ctx.send(f"**{ctx.command.name}** can only be used in NFSW channels.")
         elif isinstance(error, commands.CommandInvokeError):
             if isinstance(error.original, wavelink.ZeroConnectedNodes):
                 return await ctx.send("No Lavalink nodes are currently online. Please try again.")

@@ -150,12 +150,9 @@ class Utilities(commands.Cog):
                               description=self.advisory,
                               url="https://www.bing.com/covid",
                               colour=discord.Colour.dark_teal())
-        embed.add_field(name="**• Confirmed Cases:**",
-                        value=humanize.intcomma(confirmed))
-        embed.add_field(name="**• Active Cases:**",
-                        value=humanize.intcomma(active))
-        embed.add_field(name="**• Recovered:**",
-                        value=humanize.intcomma(recovered))
+        embed.add_field(name="**• Confirmed Cases:**", value=humanize.intcomma(confirmed))
+        embed.add_field(name="**• Active Cases:**", value=humanize.intcomma(active))
+        embed.add_field(name="**• Recovered:**", value=humanize.intcomma(recovered))
         embed.add_field(name="**• Deaths:**", value=humanize.intcomma(deaths))
         embed.add_field(name="**• Approx. Death Rate:**", value=rate)
         embed.add_field(name="**• Last Updated On:**", value=last_update)
@@ -218,12 +215,10 @@ class Utilities(commands.Cog):
 
         # Add embed fields.
         embed.add_field(name="**• Author**", value=str(data["info"]["author"]))
-        embed.add_field(name="**• Latest Release**",
-                        value=str(data["info"]["version"]))
+        embed.add_field(name="**• Latest Release**", value=str(data["info"]["version"]))
 
         if data["info"]["license"]:
-            embed.add_field(name="**• License**",
-                            value=data["info"]["license"])
+            embed.add_field(name="**• License**", value=data["info"]["license"])
 
         # If home page isn't empty, make a embeded link.
         if data["info"]["home_page"]:
@@ -338,8 +333,7 @@ class Utilities(commands.Cog):
         embed.add_field(name="Members", value=fmt)
 
         embed.add_field(name="Roles", value=len(ctx.guild.roles))
-        embed.add_field(name="Server Boosters", value=len(
-            ctx.guild.premium_subscribers))
+        embed.add_field(name="Server Boosters", value=len(ctx.guild.premium_subscribers))
 
         # Clean verification level and add a field.
         verif = str(ctx.guild.verification_level).replace("_", " ").title()
@@ -395,6 +389,7 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="wikipedia", aliases=["wiki"])
+    @commands.is_nsfw()
     @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _wikipedia(self, ctx, *, query: str):
         """Search Wikipedia for a given term."""
