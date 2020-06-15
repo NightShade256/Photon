@@ -169,22 +169,23 @@ class PhotonCog(commands.Cog, name="Photon"):
         client_id = app_info.id
         api_url = f"https://discordbotlist.com/api/v1/bots/{client_id}/stats"
 
-        params = {
+        payload = {
             "users": len(self.bot.users),
             "guilds": len(self.bot.guilds)
         }
 
         headers = {
-            "Authorization": api_key
+            "Authorization": api_key,
+            "Content-Type": "application/json"
         }
 
-        async with self.bot.web.post(api_url, params=params, headers=headers) as resp:
+        async with self.bot.web.post(api_url, json=payload, headers=headers) as resp:
             if resp.status != 200:
                 self.bot.photon_log.info(
                     "Encountered API error while posting to stats to DBL.")
             else:
                 self.bot.photon_log.info("Posted stats to DBL.")
-        
+
         self.iterations += 1
 
 
