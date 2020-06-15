@@ -178,7 +178,7 @@ class PhotonCog(commands.Cog, name="Photon"):
             "Authorization": api_key
         }
 
-        async with self.web.post(api_url, params=params, headers=headers) as resp:
+        async with self.bot.web.post(api_url, params=params, headers=headers) as resp:
             if resp.status != 200:
                 self.bot.photon_log.info(
                     "Encountered API error while posting to stats to DBL.")
