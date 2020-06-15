@@ -3,8 +3,9 @@ import textwrap
 import discord
 import humanize
 import psutil
-from discord.ext import commands
+from discord.ext import commands, tasks
 
+import config
 from bot import Photon
 
 
@@ -14,6 +15,11 @@ class PhotonCog(commands.Cog, name="Photon"):
     def __init__(self, bot: Photon):
         self.bot = bot
         self.process = psutil.Process()
+        self.discord_bot_list.start()
+        self.iterations = 0
+
+    def cog_unload(self):
+        self.discord_bot_list.cancel()
 
     async def cog_command_error(self, ctx, error):
         """Mini error handler for this cog."""
@@ -21,7 +27,8 @@ class PhotonCog(commands.Cog, name="Photon"):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send("Please provide a valid prefix string.")
         else:
-            self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
+            self.bot.photon_log.error(
+                f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="about")
     async def _about(self, ctx):
@@ -130,7 +137,8 @@ class PhotonCog(commands.Cog, name="Photon"):
         # Calculate the time
         message = await ctx.send("Calculating ping...")
 
-        delta = (message.created_at - ctx.message.created_at).microseconds / 1000
+        delta = (message.created_at -
+                 ctx.message.created_at).microseconds / 1000
 
         fmt = f"\U0001F493 **{latency:.2f}ms**\n" \
               f"\U00002194\U0000FE0F **{delta}ms**\n\n" \
@@ -144,6 +152,38 @@ class PhotonCog(commands.Cog, name="Photon"):
                          icon_url=ctx.author.avatar_url)
 
         await message.edit(content="", embed=embed)
+
+    @tasks.loop(minutes=15.0)
+    async def discord_bot_list(self):
+        """Posts the bot statistics to DBL fifteen minutes."""
+
+        self.bot.photon_log.info("Trying to post statistics to DBL.")
+
+        try:
+            api_key = config.bot_lists["dbl"]
+        except Exception:
+            return
+
+        client_id = self.bot.user.id
+        api_url = f"https://discordbotlist.com/api/v1/bots/{client_id}/stats"
+
+        params = {
+            "users": len(self.bot.users),
+            "guilds": len(self.bot.guilds)
+        }
+
+        headers = {
+            "Authorization": api_key
+        }
+
+        async with self.web.post(api_url, params=params, headers=headers) as resp:
+            if resp.status != 200:
+                self.bot.photon_log.info(
+                    "Encountered API error while posting to stats to DBL.")
+            else:
+                self.bot.photon_log.info("Posted stats to DBL.")
+        
+        self.iterations += 1
 
 
 def setup(bot: Photon):

@@ -3,7 +3,7 @@ import logging
 import aiohttp
 import discord
 import wavelink
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 import config
 from utils import db
@@ -57,7 +57,6 @@ class Photon(commands.Bot):
             except Exception as e:
                 self.photon_log.error(
                     f"{ext} extension failed to load. EXCEPTION: {e.__cause__}")
-        self.discord_bot_list.start()
 
     async def on_ready(self):
         self.photon_log.info(
@@ -105,32 +104,3 @@ class Photon(commands.Bot):
             else:
                 self.photon_log.error(
                     f"[ERROR] Command: {ctx.command.name} Exception: {error}")
-
-    @tasks.loop(minutes=15.0)
-    async def discord_bot_list(self):
-        """Posts the bot statistics to DBL fifteen minutes."""
-
-        self.photon_log.info("Trying to post statistics to DBL.")
-
-        try:
-            api_key = config.bot_lists["dbl"]
-        except Exception:
-            return
-
-        client_id = self.user.id
-        api_url = f"https://discordbotlist.com/api/v1/bots/{client_id}/stats"
-
-        params = {
-            "users": len(self.users),
-            "guilds": len(self.guilds)
-        }
-
-        headers = {
-            "Authorization": api_key
-        }
-
-        async with self.web.post(api_url, params=params, headers=headers) as resp:
-            if resp.status != 200:
-                self.photon_log.info("Encountered API error while posting to stats to DBL.")
-            else:
-                self.photon_log.info("Posted stats to DBL.")
