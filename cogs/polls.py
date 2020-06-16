@@ -59,7 +59,7 @@ class Polls(commands.Cog):
 
     @commands.command(name="poll")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 120.0, commands.BucketType.guild)
+    @commands.cooldown(1, 60.0, commands.BucketType.guild)
     async def _poll(self, ctx, channel: discord.TextChannel, *, question: str):
         """Create a poll.
 
@@ -161,7 +161,7 @@ class Polls(commands.Cog):
 
     @_apoll.command(name="new")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 600.0, commands.BucketType.guild)
+    @commands.cooldown(1, 300.0, commands.BucketType.guild)
     async def _apoll_new(self, ctx, time_limit, channel: discord.TextChannel, *, question: str):
         """Create a new anonymous poll.
 
@@ -237,7 +237,7 @@ class Polls(commands.Cog):
 
     @_apoll.command(name="view")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    @commands.cooldown(1, 20.0, commands.BucketType.guild)
     async def _apoll_view(self, ctx, poll_id: int):
         """View the results of an ongoing anonymous poll.
 
@@ -260,7 +260,7 @@ class Polls(commands.Cog):
 
     @_apoll.command(name="stop")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    @commands.cooldown(1, 30.0, commands.BucketType.guild)
     async def _apoll_stop(self, ctx, poll_id: int):
         """Stops an ongoing poll prematurely."""
 
@@ -281,7 +281,7 @@ class Polls(commands.Cog):
 
     @_apoll.command(name="history")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 20.0, commands.BucketType.guild)
+    @commands.cooldown(1, 10.0, commands.BucketType.guild)
     async def _apoll_history(self, ctx, poll_id: int = None):
         """Fetch information about past anonymous polls.
 

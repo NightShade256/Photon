@@ -1,3 +1,5 @@
+import asyncio
+import datetime
 import logging
 
 import aiohttp
@@ -5,11 +7,10 @@ import discord
 import wavelink
 from discord.ext import commands
 
-import config
 from utils import db
 
 __author__ = "Anish Jewalikar (__NightShade256__)"
-__version__ = "1.11.2"
+__version__ = "1.12.0"
 
 
 extensions = [
@@ -42,14 +43,26 @@ class Photon(commands.Bot):
 
     def __init__(self, db_helper, event_loop):
         super().__init__(_get_prefix, loop=event_loop)
+
+        # Statistics
         self.library_version = discord.__version__
+        self.bot_version = __version__
+        self.start_time = datetime.datetime.utcnow()
+        self.commands_completed = 0
+        self._comcompleted_lock = asyncio.Lock()
+
+        # Database, Web session and prefix configurations
         self.prefix_list = {}
         self.database: db.DatabaseHelper = db_helper
         self.web = aiohttp.ClientSession(loop=self.loop)
+
+        # Logging setup
         log_string = "[PHOTON] Time: %(asctime)s Message: %(message)s"
         logging.basicConfig(format=log_string, datefmt="%d-%b-%y %H:%M:%S")
         self.photon_log = logging.getLogger("Photon")
         self.photon_log.setLevel(10)
+
+        # Loading extensions.
         for ext in extensions:
             try:
                 self.load_extension(ext)
@@ -97,10 +110,18 @@ class Photon(commands.Bot):
             return await ctx.send(
                 f"The command is on cooldown. Retry after **{error.retry_after:.2f}** seconds.")
         elif isinstance(error, commands.NSFWChannelRequired):
-            return await ctx.send(f"**{ctx.command.name}** can only be used in NFSW channels.")
+            return await ctx.send(
+                f"**{(ctx.command.name).title()}** command can only be used in NFSW channels."
+            )
         elif isinstance(error, commands.CommandInvokeError):
             if isinstance(error.original, wavelink.ZeroConnectedNodes):
                 return await ctx.send("No Lavalink nodes are currently online. Please try again.")
             else:
                 self.photon_log.error(
                     f"[ERROR] Command: {ctx.command.name} Exception: {error}")
+
+    async def on_command_completion(self, ctx: commands.Context):
+        """Event handler that gets called when a command is successfully invoked."""
+
+        async with self._comcompleted_lock:
+            self.commands_completed += 1

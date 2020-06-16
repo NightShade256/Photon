@@ -120,7 +120,7 @@ class Utilities(commands.Cog):
         await self.data_ready.wait()
 
     @commands.command(name="covid")
-    @commands.cooldown(1, 30.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _covid(self, ctx, *, country: str = "all"):
         """Provides statistics related to COVID-19 for the world.
 
@@ -187,7 +187,7 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="pypi")
-    @commands.cooldown(1, 20.0, commands.BucketType.user)
+    @commands.cooldown(1, 10.0, commands.BucketType.user)
     async def _pypi(self, ctx, *, package_name: str):
         """Displays information about a package listed on PyPI."""
 
@@ -240,7 +240,7 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="dictionary", aliases=["dict"])
-    @commands.cooldown(1, 20.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _dictionary(self, ctx, *, word: str):
         """Get the meaning for an English word or phrase.
 
@@ -390,7 +390,7 @@ class Utilities(commands.Cog):
 
     @commands.command(name="wikipedia", aliases=["wiki"])
     @commands.is_nsfw()
-    @commands.cooldown(1, 15.0, commands.BucketType.user)
+    @commands.cooldown(1, 7.0, commands.BucketType.user)
     async def _wikipedia(self, ctx, *, query: str):
         """Search Wikipedia for a given term."""
 
@@ -446,9 +446,11 @@ class Utilities(commands.Cog):
             return await ctx.send("Your query is ambiguous. Please specify more details.")
 
         if len(page["extract"]) < 500:
-            description = page["extract"]
+            description = "".join(textwrap.wrap(page["extract"], len(page["extract"])))
         else:
-            description = f"{page['extract'][:500]}...\n[Read More]({link})"
+            extract = page["extract"][:500]
+            extract = "".join(textwrap.wrap(extract, len(extract)))
+            description = f"{extract}...\n[Read More]({link})"
 
         if page.get("thumbnail", None) is not None:
             embed.set_image(url=page["thumbnail"]["source"])

@@ -2,6 +2,9 @@
 
 A multipurpose Discord bot written in Python that is easy-to-use and fast.
 
+To invite the bot to your server click [here](https://discord.com/oauth2/authorize?client_id=698144879930376193&permissions=1341652806&scope=bot).  
+To join the bot support server click [here](https://discord.gg/hhRQUa4).
+
 ## Setup
 
 Photon can be self hosted on any platform of your choice.
@@ -72,12 +75,15 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.11.2
+### v1.12.0
 
-1. Add support for posting statistics to DBL.
+1. Added `invite` command, which displays the bot's invite link.
 
-You have to change your `config.py` to contain another dictionary called `bot_lists`.
-This is not mandatory.
+2. Added the *commands executed*, *bot version* and *bot uptime* statistics to the `about` command.
+
+3. Fix text wrapping issue in the `wikipedia` command.
+
+4. Almost halved all the command cooldowns for the users of the bot.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.
@@ -106,6 +112,8 @@ Photon is licensed under the MIT License.
 5. A `.png` version of the PyPI logo is used in the project. The logo rightfully belongs to PyPI. Photon is in no form or way affiliated to PyPI.
 
 6. The OWL Dictionary API is used in this project. It can be found [here](https://owlbot.info)
+
+7. The Wikipedia API is used in this project.
 
 ## Support
 

@@ -30,7 +30,7 @@ class Notes(commands.Cog):
             self.bot.photon_log.error(f"[ERROR] Command: {ctx.command.name}, Exception: {error}.")
 
     @commands.command(name="add")
-    @commands.cooldown(1, 30.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _nadd(self, ctx, *, title: str):
         """Adds a note under the user's ID to the database."""
 
@@ -59,7 +59,7 @@ class Notes(commands.Cog):
         await ctx.send("Note successfully added.")
 
     @commands.command(name="list")
-    @commands.cooldown(1, 15.0, commands.BucketType.user)
+    @commands.cooldown(1, 7.0, commands.BucketType.user)
     async def _nlist(self, ctx, page: int = 1):
         """Lists the notes of the user invoking the command.
 
@@ -90,7 +90,7 @@ class Notes(commands.Cog):
         await ctx.send(embed=pages[page - 1])
 
     @commands.command(name="delete")
-    @commands.cooldown(1, 30.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _ndelete(self, ctx, note_id: int):
         """Deletes the note belonging to the user with the specified note ID."""
 
@@ -102,7 +102,7 @@ class Notes(commands.Cog):
             f"Note with **Title:** `{title}` and **ID:** `{note_id}` was removed.")
 
     @commands.command(name="view")
-    @commands.cooldown(1, 30.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _nview(self, ctx, note_id: int):
         """View the note belonging to the user with the specified note ID."""
 
@@ -118,7 +118,7 @@ class Notes(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="file")
-    @commands.cooldown(1, 30.0, commands.BucketType.user)
+    @commands.cooldown(1, 15.0, commands.BucketType.user)
     async def _nfile(self, ctx, note_id: int):
         """Converts the note into a .txt file which can then be downloaded."""
 

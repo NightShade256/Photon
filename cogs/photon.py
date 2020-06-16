@@ -1,3 +1,4 @@
+import datetime
 import textwrap
 
 import discord
@@ -51,6 +52,7 @@ class PhotonCog(commands.Cog, name="Photon"):
         desc = " ".join([textwrap.dedent(x) for x in desc.splitlines()])
         desc = " ".join(textwrap.wrap(desc, len(desc)))
         url = 'https://www.python.org/static/community_logos/python-powered-w-200x80.png'
+        uptime = humanize.naturaldelta(datetime.datetime.utcnow() - self.bot.start_time)
 
         # Building the embed.
         embed = discord.Embed(title="About Photon", description=desc,
@@ -60,6 +62,9 @@ class PhotonCog(commands.Cog, name="Photon"):
         embed.add_field(name='**• Resource Usage:**', value=resource_usage)
         embed.add_field(name='**• Server Count:**', value=guilds)
         embed.add_field(name='**• Unique Users:**', value=unique_users)
+        embed.add_field(name="**• Commands Executed:**", value=self.bot.commands_completed)
+        embed.add_field(name="**• Uptime:**", value=uptime)
+        embed.add_field(name="**• Bot Version:**", value=self.bot.bot_version)
         embed.set_footer(
             text=f'Requested by {ctx.author.name}.', icon_url=ctx.author.avatar_url)
 
@@ -92,7 +97,7 @@ class PhotonCog(commands.Cog, name="Photon"):
 
     @_welcome.command(name="set")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    @commands.cooldown(1, 30.0, commands.BucketType.guild)
     async def _welcome_set(self, ctx: commands.Context):
         """Set the current channel as the welcome/leave channel."""
 
@@ -101,7 +106,7 @@ class PhotonCog(commands.Cog, name="Photon"):
 
     @_welcome.command(name="disable")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 60.0, commands.BucketType.guild)
+    @commands.cooldown(1, 30.0, commands.BucketType.guild)
     async def _welcome_disable(self, ctx: commands.Context):
         """Disables the welcome and leave messages."""
 
@@ -110,7 +115,7 @@ class PhotonCog(commands.Cog, name="Photon"):
 
     @commands.command(name="prefix")
     @commands.has_guild_permissions(ban_members=True)
-    @commands.cooldown(1, 120.0, commands.BucketType.guild)
+    @commands.cooldown(1, 60.0, commands.BucketType.guild)
     async def _prefix(self, ctx: commands.Context, *, prefix: str):
         """Change the prefix to your liking."""
 
@@ -152,6 +157,20 @@ class PhotonCog(commands.Cog, name="Photon"):
                          icon_url=ctx.author.avatar_url)
 
         await message.edit(content="", embed=embed)
+
+    @commands.command(name="invite")
+    async def _invite(self, ctx: commands.Context):
+        """Get the invite link for the bot."""
+        app_info = await self.bot.application_info()
+        client_id = app_info.id
+
+        fmt = "**You can invite me by clicking [here](" \
+              f"https://discord.com/oauth2/authorize?client_id={client_id}" \
+              "&permissions=1341652806&scope=bot).**"
+
+        embed = discord.Embed(description=fmt, colour=discord.Colour.dark_teal())
+        embed.set_footer(text=f"Requested by {ctx.author.name}.", icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
 
     @tasks.loop(minutes=15.0)
     async def discord_bot_list(self):
