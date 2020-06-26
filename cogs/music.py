@@ -1,6 +1,7 @@
 import asyncio
 import datetime
 import itertools
+import random
 import re
 import time
 
@@ -11,7 +12,6 @@ from discord.ext import commands
 
 import config
 from bot import Photon
-
 
 RURL = re.compile(r"https?:\/\/(?:www\.)?.+")
 RSEEK = re.compile(
@@ -270,8 +270,8 @@ class Music(commands.Cog):
         # If it is a playlist, add first 20 songs to the queue.
         if isinstance(tracks, wavelink.TrackPlaylist):
             await ctx.send(
-                f"Adding {min(len(tracks.tracks), 50)} items from the playlist to the queue.")
-            for track in tracks.tracks[:20]:
+                f"Adding {min(len(tracks.tracks), 75)} items from the playlist to the queue.")
+            for track in tracks.tracks[:75]:
                 await ctr.queue.put(track)
         else:
             track = tracks[0]
@@ -617,6 +617,29 @@ class Music(commands.Cog):
 
         ctr.dj = user
         await ctx.send(f"{user.mention} is now the new DJ.")
+
+    @commands.command(name="shuffle")
+    async def _shuffle(self, ctx: commands.Context):
+        """Shuffles the player queue."""
+
+        # See comment on volume command
+        if not self.is_ctr_present(ctx.guild.id):
+            raise NoControllerError()
+
+        # Check if user has authority
+        ctr = self.get_controller(ctx)
+        if not ctr.has_authority(ctx.author):
+            raise NotPrivilegedError()
+        if not ctr.is_session_channel(ctx.channel):
+            raise IncorrectChannelError(ctr.channel)
+
+        if ctr.queue.qsize() < 3:
+            return await ctx.send(
+                "Please add atleast three songs to the queue for a meaningful shuffle."
+            )
+
+        random.shuffle(ctr.queue._queue)
+        await ctx.send("The queue has been successfully shuffled.")
 
 
 def setup(bot: Photon):

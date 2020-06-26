@@ -75,15 +75,9 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.12.0
+### v1.13.0
 
-1. Added `invite` command, which displays the bot's invite link.
-
-2. Added the *commands executed*, *bot version* and *bot uptime* statistics to the `about` command.
-
-3. Fix text wrapping issue in the `wikipedia` command.
-
-4. Almost halved all the command cooldowns for the users of the bot.
+1. Added the `shuffle` music command. Increased the playlist queue limit to 75.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.
