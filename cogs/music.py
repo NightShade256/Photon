@@ -543,7 +543,7 @@ class Music(commands.Cog):
         string = "the beginning" if pos == 0 else position
         await ctx.send(f"↔️ Seeked the track to **{string}**.")
 
-    @commands.command(name="eq", aliases=["equalizer"])
+    @commands.command(name="eq", aliases=["equalizer", "equaliser"])
     async def _eq(self, ctx: commands.Context, eq_name: str):
         """Change the equalizer of the player.
 

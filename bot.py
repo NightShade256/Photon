@@ -10,7 +10,7 @@ from discord.ext import commands
 from utils import db
 
 __author__ = "Anish Jewalikar"
-__version__ = "1.13.0"
+__version__ = "1.13.1"
 
 
 extensions = [

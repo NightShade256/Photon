@@ -241,6 +241,7 @@ class Utilities(commands.Cog):
 
     @commands.command(name="dictionary", aliases=["dict"])
     @commands.cooldown(1, 15.0, commands.BucketType.user)
+    @commands.is_nfsw()
     async def _dictionary(self, ctx, *, word: str):
         """Get the meaning for an English word or phrase.
 
