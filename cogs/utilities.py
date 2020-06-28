@@ -240,8 +240,8 @@ class Utilities(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(name="dictionary", aliases=["dict"])
+    @commands.is_nsfw()
     @commands.cooldown(1, 15.0, commands.BucketType.user)
-    @commands.is_nfsw()
     async def _dictionary(self, ctx, *, word: str):
         """Get the meaning for an English word or phrase.
 
