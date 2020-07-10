@@ -75,9 +75,9 @@ Photon can be self hosted on any platform of your choice.
 
 ## Changelog
 
-### v1.13.1
+### v1.13.2
 
-1. Comply with top.gg rules.
+1. Add the `vote` command.
 
 Be sure to visit the [wiki](https://github.com/NightShade256/Photon/wiki) which has additional information regarding the features and implementation of Photon. As my country is under lockdown due to the ongoing COVID-19 pandemic, I have a lot of free time,
 hence you can expect weekly updates to the code, to increase stability, intuitiveness, performance.

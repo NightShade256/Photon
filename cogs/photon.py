@@ -172,6 +172,20 @@ class PhotonCog(commands.Cog, name="Photon"):
         embed.set_footer(text=f"Requested by {ctx.author.name}.", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
+    @commands.command(name="vote")
+    async def _vote(self, ctx: commands.Context):
+        """Voting information for the bot."""
+        app_info = await self.bot.application_info()
+        client_id = app_info.id
+
+        fmt = "You can show your support for the bot by voting through the following links:\n\n" \
+              f"**top.gg**:\nhttps://top.gg/bot/{client_id}\n\n" \
+              f"**discordbotlist**:\nhttps://discordbotlist.com/bots/photon"
+
+        embed = discord.Embed(description=fmt, colour=discord.Colour.dark_teal())
+        embed.set_footer(text=f"Requested by {ctx.author.name}.", icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
+
     @tasks.loop(minutes=15.0)
     async def discord_bot_list(self):
         """Posts the bot statistics to DBL fifteen minutes."""
