@@ -2,9 +2,6 @@
 
 A multipurpose Discord bot written in Python that is easy-to-use and fast.
 
-To invite the bot to your server click [here](https://discord.com/oauth2/authorize?client_id=698144879930376193&permissions=1341652806&scope=bot).  
-To join the bot support server click [here](https://discord.gg/hhRQUa4).
-
 ## Setup
 
 Photon can be self hosted on any platform of your choice.
