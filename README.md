@@ -105,8 +105,3 @@ Photon is licensed under the MIT License.
 6. The OWL Dictionary API is used in this project. It can be found [here](https://owlbot.info)
 
 7. The Wikipedia API is used in this project.
-
-## Support
-
-Please join the official support server on Discord.  
-Link: <https://discord.gg/hhRQUa4>
